@@ -1,6 +1,6 @@
-NAMECOIN_START="namecoind"
-if [ $REGTEST == 'true' ]; then
-  NAMECOIN_START=$NAMECOIN_START" -regtest"
+_REGTEST=''
+if [ $REGTEST = true ]; then 
+	_REGTEST='-regtest' 
 fi
-NAMECOIN_START=$NAMECOIN_START" -printtoconsole -datadir=/home/doichain/data/namecoin"
-exec $NAMECOIN_START
+
+namecoind $_REGTEST -datadir='/home/doichain/data/namecoin' -addnode=$CONNECTION_NODE

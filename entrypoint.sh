@@ -6,31 +6,32 @@ maxconnections=${MAX_CONNECTIONS}
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
-rpcport=${RPC_PORT}" > data/namecoin/namecoin.conf
+rpcport=${RPC_PORT}
+port=${NODE_PORT}" > data/namecoin/namecoin.conf
 
 DAPP_SETTINGS='{
   "app": {
     "types": ['
-if [ $SEND_DAPP == 'true' ]; then 
+if [ $DAPP_SEND = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"send"'
-  if [ $CONFIRM_DAPP == 'true' ] || [ $VERIFY_DAPP == 'true' ]; then 
+  if [ $DAPP_CONFIRM = true ] || [ $DAPP_VERIFY = true ]; then 
 	DAPP_SETTINGS=$DAPP_SETTINGS','
   fi
 fi
-if [ $CONFIRM_DAPP == 'true' ]; then 
+if [ $DAPP_CONFIRM = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm"'
-  if [ $VERIFY_DAPP == 'true' ]; then 
+  if [ $DAPP_VERIFY = true ]; then 
 	DAPP_SETTINGS=$DAPP_SETTINGS','
   fi
 fi
-if [ $VERIFY_DAPP == 'true' ]; then 
+if [ $DAPP_VERIFY = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"verify"'
 fi
 DAPP_SETTINGS=$DAPP_SETTINGS']
   },'
   
   
-if [ $SEND_DAPP == 'true' ]; then 
+if [ $DAPP_SEND = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"send": {
 	"namecoin": {
       "host": "localhost",
@@ -39,11 +40,11 @@ if [ $SEND_DAPP == 'true' ]; then
       "password": "'$RPC_PASSWORD'"
     }
   }'
-  if [ $CONFIRM_DAPP == 'true' ] || [ $VERIFY_DAPP == 'true' ]; then 
+  if [ $DAPP_CONFIRM = true ] || [ $DAPP_VERIFY = true ]; then 
 	DAPP_SETTINGS=$DAPP_SETTINGS','
   fi
 fi
-if [ $CONFIRM_DAPP == 'true' ]; then 
+if [ $DAPP_CONFIRM = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
 	"namecoin": {
       "host": "localhost",
@@ -52,11 +53,11 @@ if [ $CONFIRM_DAPP == 'true' ]; then
       "password": "'$RPC_PASSWORD'"
     }
   }'
-  if [ $VERIFY_DAPP == 'true' ]; then 
+  if [ $DAPP_VERIFY = true ]; then 
 	DAPP_SETTINGS=$DAPP_SETTINGS','
   fi
 fi
-if [ $VERIFY_DAPP == 'true' ]; then 
+if [ $DAPP_VERIFY = true ]; then 
   DAPP_SETTINGS=$DAPP_SETTINGS'"verify": {
 	"namecoin": {
       "host": "localhost",

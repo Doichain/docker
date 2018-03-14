@@ -1,16 +1,19 @@
 FROM ubuntu
 
 #Setup vars
-ENV SEND_DAPP false
-ENV CONFIRM_DAPP false
-ENV VERIFY_DAPP false
-ENV RPC_USER Admin
-ENV RPC_PASSWORD Password
-ENV RPC_ALLOW_IP ::/0
+ENV CONNECTION_NODE 5.9.154.226
+ENV DAPP_CONFIRM false
+ENV DAPP_PORT 3000
+ENV DAPP_SEND false
+ENV DAPP_VERIFY false
 ENV MAX_CONNECTIONS 5
-ENV RPC_PORT 8338
-ENV REGTEST false
+ENV NODE_PORT 8338
 ARG OS_LOCALE="en_US.UTF-8"
+ENV REGTEST false
+ENV RPC_ALLOW_IP ::/0
+ENV RPC_PASSWORD Password
+ENV RPC_PORT 8339
+ENV RPC_USER Admin
 ARG LANG=${OS_LOCALE} 
 ARG LANGUAGE=en_US:en 
 ARG LC_ALL=${OS_LOCALE}
@@ -58,7 +61,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install namecoin-core
 WORKDIR /home/doichain
 RUN mkdir .namecoin && \
-	sudo git clone --branch 'dc0.0.7' https://github.com/Le-Space/namecoin-core.git namecoin-core && \
+	sudo git clone --branch 'doichain2' https://github.com/Le-Space/namecoin-core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui && \
@@ -102,4 +105,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE 3000
+EXPOSE $DAPP_PORT $NODE_PORT
