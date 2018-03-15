@@ -1,5 +1,5 @@
 _REGTEST=''
-if [ $REGTEST = true ]; then 
+if [ $REGTEST = true ]; then
 	_REGTEST='-regtest' 
 fi
 

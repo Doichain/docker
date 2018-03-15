@@ -1,10 +1,8 @@
 FROM ubuntu
 
 #Setup build vars
-ARG OS_LOCALE=en_US.UTF-8
-ARG LANG=${OS_LOCALE}
-ARG LANGUAGE=en_US:en
-ARG LC_ALL=${OS_LOCALE}
+ARG NODE_PORT_REGTEST=18445
+ARG RPC_PORT_REGTEST=18332
 
 #Setup run vars
 ENV CONNECTION_NODE 5.9.154.226
@@ -106,5 +104,7 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 #Start namecoin and meteor
 CMD ["scripts/start.sh"]
 
+RUN echo "$NODE_PORT $RPC_PORT"
+
 #Expose ports
-EXPOSE $DAPP_PORT $NODE_PORT
+EXPOSE $DAPP_PORT $NODE_PORT $NODE_PORT_REGTEST $RPC_PORT $RPC_PORT_REGTEST
