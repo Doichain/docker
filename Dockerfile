@@ -104,7 +104,5 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 #Start namecoin and meteor
 CMD ["scripts/start.sh"]
 
-RUN echo "$NODE_PORT $RPC_PORT"
-
 #Expose ports
 EXPOSE $DAPP_PORT $NODE_PORT $NODE_PORT_REGTEST $RPC_PORT $RPC_PORT_REGTEST
