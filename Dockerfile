@@ -71,8 +71,7 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-	mkdir \
-	namecoin \
+	mkdir namecoin
 
 #Run entrypoint
 WORKDIR /home/doichain
