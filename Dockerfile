@@ -91,9 +91,15 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
+<<<<<<< HEAD
 	mkdir \
 	namecoin \
 	dapp
+=======
+	mkdir .namecoin && \
+	sudo rm -rf /home/doichain/.namecoin && \
+	sudo ln -s /home/doichain/data/.namecoin /home/doichain/
+>>>>>>> 1074034... Created symlink. No need for cli -conf anymore
 
 #Run entrypoint
 WORKDIR /home/doichain
