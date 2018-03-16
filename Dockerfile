@@ -66,6 +66,10 @@ RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
 	namecoin-start.sh && \
+	sudo chmod +x \
+	entrypoint.sh \
+	start.sh \
+	namecoin-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
 
