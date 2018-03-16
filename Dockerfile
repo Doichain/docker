@@ -84,6 +84,11 @@ RUN sudo dos2unix \
 	start.sh \
 	namecoin-start.sh \
 	dapp-start.sh && \
+	sudo chmod +x \
+	entrypoint.sh \
+	start.sh \
+	namecoin-start.sh \
+	dapp-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
 
@@ -91,15 +96,10 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-<<<<<<< HEAD
-	mkdir \
-	namecoin \
-	dapp
-=======
-	mkdir .namecoin && \
+	mkdir .namecoin \
+	dapp && \
 	sudo rm -rf /home/doichain/.namecoin && \
 	sudo ln -s /home/doichain/data/.namecoin /home/doichain/
->>>>>>> 1074034... Created symlink. No need for cli -conf anymore
 
 #Run entrypoint
 WORKDIR /home/doichain
