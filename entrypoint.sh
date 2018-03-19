@@ -13,7 +13,7 @@ rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
-port=${_NODE_PORT}" > data/.namecoin/namecoin.conf
+port=${_NODE_PORT}" > data/namecoin/namecoin.conf
 
 DAPP_SETTINGS='{
   "app": {
