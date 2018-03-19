@@ -71,7 +71,7 @@ RUN mkdir .namecoin && \
 	sudo make install
 
 RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone https://github.com/Doichain/dApp.git /home/doichain/dapp && \
+	sudo git clone --branch '0.0.1' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \
