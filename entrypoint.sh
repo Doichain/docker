@@ -9,7 +9,6 @@ if [ $REGTEST = true ]; then
 fi
 
 echo "daemon=1
-maxconnections=${MAX_CONNECTIONS}
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
