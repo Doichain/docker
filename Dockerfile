@@ -96,10 +96,10 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-	mkdir .namecoin \
+	mkdir namecoin \
 	dapp && \
 	sudo rm -rf /home/doichain/.namecoin && \
-	sudo ln -s /home/doichain/data/.namecoin /home/doichain/
+	sudo ln -s /home/doichain/data/namecoin /home/doichain/.namecoin
 
 #Run entrypoint
 WORKDIR /home/doichain
