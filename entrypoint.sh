@@ -73,7 +73,7 @@ if [ $DAPP_CONFIRM = true ]; then
       "password": "'$DAPP_SMTP_PASS'",
       "server":   "'$DAPP_SMTP_HOST'",
       "port": "'$DAPP_SMTP_PORT'"
-    },
+    }
   }'
   if [ $DAPP_VERIFY = true ]; then
 		DAPP_SETTINGS=$DAPP_SETTINGS','
