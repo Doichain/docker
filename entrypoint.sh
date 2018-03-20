@@ -72,10 +72,6 @@ if [ $DAPP_CONFIRM = true ]; then
 		echo "Confirmation dApp active but smtp settings not found! (ENV DAPP_SMTP_USER, DAPP_SMTP_PASS, DAPP_SMTP_HOST, DAPP_SMTP_PORT)"
 		exit 1
 	fi
-	if [ -z "$CONFIRM_ADDRESS" ]; then
-		echo "Confirmation dApp active but confirm address not found! (ENV CONFIRM_ADDRESS)"
-		exit 1
-	fi
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
 		"namecoin": {
 		  "host": "localhost",
