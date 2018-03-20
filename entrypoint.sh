@@ -8,6 +8,11 @@ if [ $REGTEST = true ]; then
   _NODE_PORT=$NODE_PORT_REGTEST
 fi
 
+if [ -z "$RPC_USER" ] || [ -z "$RPC_PASSWORD" ]; then
+	echo "RPC user or password not set!"
+	exit 1
+fi
+
 echo "daemon=1
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
