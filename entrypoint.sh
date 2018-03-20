@@ -9,7 +9,7 @@ if [ $REGTEST = true ]; then
 fi
 
 if [ -z "$RPC_USER" ] || [ -z "$RPC_PASSWORD" ]; then
-	echo "RPC user or password not set!"
+	echo "RPC user or password not set! (ENV RPC_USER, RPC_PASSWORD)"
 	exit 1
 fi
 
@@ -21,11 +21,11 @@ rpcport=${_RPC_PORT}
 port=${_NODE_PORT}" > data/namecoin/namecoin.conf
 
 if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false ]; then
-	echo "No dApp type is enabled. Please use at least one dApp type or use node-only container instead!"
+	echo "No dApp type is enabled. Please use at least one dApp type or use node-only container instead! (ENV DAPP_SEND, DAPP_CONFIRM, DAPP_VERIFY)"
 	exit 1
 fi
 if [ -z "$DAPP_HOST" ]; then
-	echo "No host settings found!"
+	echo "No host settings found! (ENV DAPP_HOST)"
 	exit 1
 fi
 DAPP_SETTINGS='{
@@ -69,11 +69,11 @@ if [ $DAPP_SEND = true ]; then
 fi
 if [ $DAPP_CONFIRM = true ]; then
 	if [ -z "$DAPP_SMTP_USER" ] || [ -z "$DAPP_SMTP_PASS" ] || [ -z "$DAPP_SMTP_HOST" ] || [ -z "$DAPP_SMTP_PORT" ]; then
-		echo "Confirmation dApp active but smtp settings not found!"
+		echo "Confirmation dApp active but smtp settings not found! (ENV DAPP_SMTP_USER, DAPP_SMTP_PASS, DAPP_SMTP_HOST, DAPP_SMTP_PORT)"
 		exit 1
 	fi
 	if [ -z "$CONFIRM_ADDRESS" ]; then
-		echo "Confirmation dApp active but confirm address not found!"
+		echo "Confirmation dApp active but confirm address not found! (ENV CONFIRM_ADDRESS)"
 		exit 1
 	fi
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
