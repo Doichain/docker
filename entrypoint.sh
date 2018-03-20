@@ -72,12 +72,17 @@ if [ $DAPP_CONFIRM = true ]; then
 		echo "Confirmation dApp active but smtp settings not found!"
 		exit 1
 	fi
+	if [ -z "$CONFIRM_ADDRESS" ]; then
+		echo "Confirmation dApp active but confirm address not found!"
+		exit 1
+	fi
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
 		"namecoin": {
 		  "host": "localhost",
 		  "port": "'$_RPC_PORT'",
 		  "username": "'$RPC_USER'",
-		  "password": "'$RPC_PASSWORD'"
+		  "password": "'$RPC_PASSWORD'",
+			"address": "'$CONFIRM_ADDRESS'"
 		},
 		"smtp": {
       "username": "'$DAPP_SMTP_USER'",
