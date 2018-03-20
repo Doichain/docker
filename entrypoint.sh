@@ -8,6 +8,11 @@ if [ $REGTEST = true ]; then
   _NODE_PORT=$NODE_PORT_REGTEST
 fi
 
+if [ -z "$RPC_USER" ] || [ -z "$RPC_PASSWORD" ]; then
+	echo "RPC user or password not set!"
+	exit 1
+fi
+
 echo "daemon=1
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
@@ -19,9 +24,15 @@ if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false
 	echo "No dApp type is enabled. Please use at least one dApp type or use node-only container instead!"
 	exit 1
 fi
+if [ -z "$DAPP_HOST" ]; then
+	echo "No host settings found!"
+	exit 1
+fi
 DAPP_SETTINGS='{
   "app": {
 		"debug": "'$DAPP_DEBUG'",
+		"host": "'$DAPP_HOST'",
+		"port": "'$DAPP_PORT'",
     "types": ['
 if [ $DAPP_SEND = true ]; then
   DAPP_SETTINGS=$DAPP_SETTINGS'"send"'
@@ -61,12 +72,17 @@ if [ $DAPP_CONFIRM = true ]; then
 		echo "Confirmation dApp active but smtp settings not found!"
 		exit 1
 	fi
+	if [ -z "$CONFIRM_ADDRESS" ]; then
+		echo "Confirmation dApp active but confirm address not found!"
+		exit 1
+	fi
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
 		"namecoin": {
 		  "host": "localhost",
 		  "port": "'$_RPC_PORT'",
 		  "username": "'$RPC_USER'",
-		  "password": "'$RPC_PASSWORD'"
+		  "password": "'$RPC_PASSWORD'",
+			"address": "'$CONFIRM_ADDRESS'"
 		},
 		"smtp": {
       "username": "'$DAPP_SMTP_USER'",

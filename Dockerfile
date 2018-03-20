@@ -6,11 +6,13 @@ ENV LANG ${OS_LOCALE}
 ENV LANGUAGE en_US:en
 ENV LC_ALL ${OS_LOCALE}
 
+ENV CONFIRM_ADDRESS ""
 ENV CONNECTION_NODE 5.9.154.226
 ENV DAPP_CONFIRM false
 ENV DAPP_DEBUG false
 ENV DAPP_PORT 3000
 ENV DAPP_DOI_URL localhost:$DAPP_PORT/api/v1/debug/mail
+ENV DAPP_HOST ""
 ENV DAPP_SEND false
 ENV DAPP_SMTP_USER ""
 ENV DAPP_SMTP_HOST ""
@@ -20,11 +22,11 @@ ENV DAPP_VERIFY false
 ENV NODE_PORT 8338
 ENV NODE_PORT_REGTEST 18445
 ENV REGTEST false
-ENV RPC_ALLOW_IP ::/0
-ENV RPC_PASSWORD Password
+ENV RPC_ALLOW_IP 127.0.0.1
+ENV RPC_PASSWORD ""
 ENV RPC_PORT 8339
 ENV RPC_PORT_REGTEST 18332
-ENV RPC_USER Admin
+ENV RPC_USER ""
 
 #Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -77,7 +79,7 @@ RUN mkdir .namecoin && \
 	sudo make install
 
 RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone --branch '0.0.1' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
+	sudo git clone --branch '0.0.2' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \
@@ -119,4 +121,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE $DAPP_PORT $NODE_PORT $NODE_PORT_REGTEST $RPC_PORT $RPC_PORT_REGTEST
+EXPOSE $DAPP_PORT $NODE_PORT $NODE_PORT_REGTEST
