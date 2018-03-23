@@ -108,10 +108,14 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-	mkdir namecoin \
-	dapp && \
-	sudo rm -rf /home/doichain/.namecoin && \
-	sudo ln -s /home/doichain/data/namecoin /home/doichain/.namecoin
+	mkdir namecoin &&\
+	mkdir -p \
+	dapp/local && \
+	sudo rm -rf \
+	/home/doichain/.namecoin \
+	/home/doichain/dapp/.meteor/local && \
+	sudo ln -s /home/doichain/data/namecoin /home/doichain/.namecoin && \
+	sudo ln -s /home/doichain/data/dapp/local /home/doichain/dapp/.meteor
 
 #Run entrypoint
 WORKDIR /home/doichain
