@@ -1,1 +1,1 @@
-(cd /home/doichain/dapp; meteor run --port $DAPP_PORT --settings /home/doichain/data/dapp/settings.json)
+(cd /home/doichain/dapp; meteor run --settings /home/doichain/data/dapp/settings.json)
