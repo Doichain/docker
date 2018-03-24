@@ -71,7 +71,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install namecoin-core
 WORKDIR /home/doichain
 RUN mkdir .namecoin && \
-	sudo git clone --branch 'v0.0.2' https://github.com/Doichain/core.git namecoin-core && \
+	sudo git clone --branch '0.0.2' https://github.com/Doichain/core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui && \
