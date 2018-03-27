@@ -56,3 +56,7 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 2.6 add a **TXT** field ``doichain-opt-in-key:<your pubkey from above> ``
 2.7 exit your docker cointainer 
 2.8 start docker container again with an additional environment variable ``-e CONFIRM_ADDRESS=<your-address>`` (or modify `/home/doichain/data/dapp/settings.json ``) which is the address of you found under 2.3 
+3. check if your blockchain receive blocks with: ``namecoin-cli getblockcount``
+4. check your balance with ``namecoin-cli getbalance`` (send some coins with ``namecoin-cli sendtoaddress ``)
+
+### Usage: Add a Doi-Request to Send - dApp
