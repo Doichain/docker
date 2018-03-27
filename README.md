@@ -48,15 +48,15 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 1. Install ``docker run --name=doichain-<your-host> --hostname=doichain-<your-host> -it --rm -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e CONNECTION_NODE='5.9.154.226' -e RPC_USER='admin' -e RPC_PASSWORD='ekb2018!' -e RPC_HOST=localhost -e DAPP_HOST=<dAppHostFromTheInternet:Port> -e DAPP_SMTP_HOST=<smtp-host> -e DAPP_SMTP_USER=<smtp-username> -e DAPP_SMTP_PASS=<smtp-password> -e DAPP_SMTP_PORT=25 -p 3007:3000 -p 8338:8338-v doichain.org:/home/doichain/data  inspiraluna/doichain:0.0.2``
 
 2. Update the DNS of your mail domain(s) :
-2.1 Connect to your running docker container via ``docker ps`` and ``docker attach <your-cointainer>`` 
-2.2 list your accounts with ``namecoin-cli listaccounts``
-2.3 get the account address of your account ``namecoin-cli getaccountaddress ""`` or use:``namecoin-cli getaddressesbyaccount ""``
-2.4 get the ``pubkey`` from ``namecoin-cli validateaddress <your-address>``
-2.5 add a **TXT** field ``doichain-opt-in-provider:<your-email-domain e.g. doichain.org>``
-2.6 add a **TXT** field ``doichain-opt-in-key:<your pubkey from above> ``
-2.7 exit your docker cointainer 
-2.8 start docker container again with an additional environment variable ``-e CONFIRM_ADDRESS=<your-address>`` (or modify `/home/doichain/data/dapp/settings.json ``) which is the address of you found under 2.3 
+   1. Connect to your running docker container via ``docker ps`` and ``docker attach <your-cointainer>`` 
+   2. list your accounts with ``namecoin-cli listaccounts``
+   3. get the account address of your account ``namecoin-cli getaccountaddress ""`` or use:``namecoin-cli getaddressesbyaccount ""``
+   4. get the ``pubkey`` from ``namecoin-cli validateaddress <your-address>``
+   5. add a **TXT** field ``doichain-opt-in-provider:<your-email-domain e.g. doichain.org>``
+   6. add a **TXT** field ``doichain-opt-in-key:<your pubkey from above> ``
+   7. exit your docker cointainer 
+   8. start docker container again with an additional environment variable ``-e CONFIRM_ADDRESS=<your-address>`` (or modify `/home/doichain/data/dapp/settings.json ``) which is the address of you found under 2.3 
 3. check if your blockchain receive blocks with: ``namecoin-cli getblockcount``
 4. check your balance with ``namecoin-cli getbalance`` (send some coins with ``namecoin-cli sendtoaddress ``)
 
-### Usage: Add a Doi-Request to Send - dApp
+### Installation Verify - dApp
