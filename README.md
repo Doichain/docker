@@ -1,7 +1,7 @@
 # doichain/docker
 ## a docker image for the Doichain environment http://www.doichain.org
 
-### How to use this docker conainer?
+### How to use this docker container?
 1. if you want to register one or more "double-opt-in" for your customer email adresses install a SEND_DAPP
 2. if you want to protect your email server from unwanted spam install CONFIRM_DAPP and VERIFY_APP (experimental)
 
@@ -13,7 +13,7 @@
 replace ``mydocker/doichain:latest``with ``doichain/dapp:latest``
 
 ### Installation Send - dApp 
-1. Install ``docker run -it --rm -e DAPP_SEND='true' -e CONNECTION_NODE='5.9.154.226' -p 3000:3000  mydocker/doichain:latest``
+1. Install ``docker run -it --rm -e DAPP_SEND='true' -p 3000:3000  mydocker/doichain:latest``
 2. Get auth token with: ``curl -H "Content-Type: application/json" -X POST -d '{"username":"admin","password":"password"}' http://localhost:3000/api/v1/login``
 
     Output should be something like:
@@ -45,7 +45,7 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 
 
 ### Installation Confirmation - dApp
-1. Install ``docker run --name=doichain-<your-host> --hostname=doichain-<your-host> -it --rm -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e CONNECTION_NODE='5.9.154.226' -e RPC_USER='admin' -e RPC_PASSWORD='ekb2018!' -e RPC_HOST=localhost -e DAPP_HOST=<dAppHostFromTheInternet:Port> -e DAPP_SMTP_HOST=<smtp-host> -e DAPP_SMTP_USER=<smtp-username> -e DAPP_SMTP_PASS=<smtp-password> -e DAPP_SMTP_PORT=25 -p 3007:3000 -p 8338:8338-v doichain.org:/home/doichain/data  inspiraluna/doichain:0.0.2``
+1. Install ``docker run --name=doichain-<your-host> --hostname=doichain-<your-host> -it --rm -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER='admin' -e RPC_PASSWORD='ekb2018!' -e RPC_HOST=localhost -e DAPP_HOST=<dAppHostFromTheInternet:Port> -e DAPP_SMTP_HOST=<smtp-host> -e DAPP_SMTP_USER=<smtp-username> -e DAPP_SMTP_PASS=<smtp-password> -e DAPP_SMTP_PORT=25 -p 3007:3000 -p 8338:8338-v doichain.org:/home/doichain/data  inspiraluna/doichain:0.0.2``
 
 2. Update the DNS of your mail domain(s) :
    1. Connect to your running docker container via ``docker ps`` and ``docker attach <your-cointainer>`` 
@@ -60,3 +60,4 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 4. check your balance with ``namecoin-cli getbalance`` (send some coins with ``namecoin-cli sendtoaddress ``)
 
 ### Installation Verify - dApp
+2. docker run --name=doichain-<your-host> --hostname=doichain-<your-host> -it --rm -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER='admin' -e RPC_PASSWORD='ekb2018!' -e RPC_HOST=localhost -e DAPP_HOST=<dAppHostFromTheInternet:Port> -e DAPP_SMTP_HOST=<smtp-host> -e DAPP_SMTP_USER=<smtp-username> -e DAPP_SMTP_PASS=<smtp-password> -e DAPP_SMTP_PORT=25 -p 3007:3000 -p 8338:8338-v doichain.org:/home/doichain/data  inspiraluna/doichain:0.0.2
