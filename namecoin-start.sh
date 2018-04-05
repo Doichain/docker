@@ -1,6 +1,6 @@
 _REGTEST=''
 if [ $REGTEST = true ]; then
-	_REGTEST='-regtest'
+	_REGTEST='-regtest -addnode='$CONNECTION_NODE
 fi
 
-namecoind $_REGTEST -addnode=$CONNECTION_NODE
+namecoind $_REGTEST

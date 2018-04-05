@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y \
 	bsdmainutils \
 	build-essential \
 	curl \
+	vim \
 	dos2unix \
 	git \
 	libboost-all-dev \
@@ -89,17 +90,20 @@ RUN meteor npm install && \
 WORKDIR /home/doichain/scripts/
 COPY entrypoint.sh entrypoint.sh
 COPY start.sh start.sh
+COPY transaction.sh transaction.sh
 COPY namecoin-start.sh namecoin-start.sh
 COPY dapp-start.sh dapp-start.sh
 RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
 	namecoin-start.sh \
+	transaction.sh \
 	dapp-start.sh && \
 	sudo chmod +x \
 	entrypoint.sh \
 	start.sh \
 	namecoin-start.sh \
+    transaction.sh \
 	dapp-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*

@@ -18,6 +18,7 @@ rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
+walletnotify=/home/doichain/data/namecoin/transaction.sh %s ${DAPP_PORT}
 port=${_NODE_PORT}" > data/namecoin/namecoin.conf
 
 if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false ]; then
