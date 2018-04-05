@@ -72,7 +72,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install namecoin-core
 WORKDIR /home/doichain
 RUN mkdir .namecoin && \
-	sudo git clone --branch '0.0.2' https://github.com/Doichain/core.git namecoin-core && \
+	sudo git clone --branch '0.0.3' https://github.com/Doichain/core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui && \
@@ -80,7 +80,7 @@ RUN mkdir .namecoin && \
 	sudo make install
 
 RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone --branch '0.0.2' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
+	sudo git clone --branch '0.0.3' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \
