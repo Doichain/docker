@@ -1,2 +1,2 @@
 #!/bin/sh
-curl -d "txid=$1" http://127.0.0.1:3000/walletnotify
+curl -X GET http://localhost:3000/api/v1/walletnotify?tx=$1
