@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y \
 	bsdmainutils \
 	build-essential \
 	curl \
+	jq \
 	vim \
 	dos2unix \
 	git \
