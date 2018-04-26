@@ -8,10 +8,22 @@ if [ $REGTEST = true ]; then
   _NODE_PORT=$NODE_PORT_REGTEST
 fi
 
-if [ -z "$RPC_USER" ] || [ -z "$RPC_PASSWORD" ]; then
-	echo "RPC user or password not set! (ENV RPC_USER, RPC_PASSWORD)"
-	exit 1
+if [ $TESTNET = true ]; then
+	_RPC_PORT=$RPC_PORT_TESTNET
+  	_NODE_PORT=$NODE_PORT_TESTNET
 fi
+
+if [ -z "$RPC_USER" ]; then
+	RPC_USER='admin'
+	echo "RPC_USER was not set, using "$RPC_USER
+fi
+
+if [ -z "$RPC_PASSWORD" ]; then
+	RPC_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs )
+	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
+fi
+
+tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs 
 
 echo "daemon=1
 rpcuser=${RPC_USER}
