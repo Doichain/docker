@@ -36,6 +36,7 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	jq \
 	vim \
+	jq \
 	dos2unix \
 	git \
 	libboost-all-dev \
