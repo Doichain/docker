@@ -15,14 +15,16 @@ fi
 
 if [ -z "$RPC_USER" ]; then
 	RPC_USER='admin'
-	echo "RPC_USER was not set, using "$RPC_USER
+	#echo "RPC_USER was not set, using "$RPC_USER
 fi
+echo "hello1"
 
 if [ -z "$RPC_PASSWORD" ]; then
-	echo "generating password"
-	RPC_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs )
-	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
+	#echo "generating password"
+	RPC_PASSWORD='generated-password' #$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs )
+	#echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
+echo "hello2"
 
 echo "daemon=1
 rpcuser=${RPC_USER}
