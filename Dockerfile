@@ -84,7 +84,7 @@ RUN mkdir .namecoin && \
 	sudo git clone --branch '0.0.4' https://github.com/Doichain/core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
-	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests && \
+	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" && \
 	sudo make && \
 	sudo make install
 
