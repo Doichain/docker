@@ -16,29 +16,23 @@ alice_rm:
 bob_rm:
 	sudo docker rm -f doichain-bob
 
-alice_shell: build alice_rm
-	$(DOCKER_ALICE) -i $(IMG) $(RUN_SHELL)
-
-bob_shell: build bob_rm
-	$(DOCKER_BOB) -i $(IMG) $(RUN_SHELL)
-
-alice_daemon: build alice_rm
-	$(DOCKER_ALICE) -d=true $(IMG) $(RUN_DAEMON)
-
-bob_daemon: build bob_rm
-	$(DOCKER_BOB) -d=true $(IMG) $(RUN_DAEMON)
-
 testnet_rm:
 	sudo docker rm -f doichain-testnet
 
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-testnet_shell: build testnet_rm
-	$(DOCKER_TESTNET) -i $(IMG) $(RUN_SHELL)
+alice-regtest: build alice_rm
+	$(DOCKER_ALICE) -i $(IMG) 
+
+bob-regtest: build bob_rm
+	$(DOCKER_BOB) -i $(IMG) 
+
+testnet: build testnet_rm
+	$(DOCKER_TESTNET) -i $(IMG) 
 
 mainnet_shell: build mainnet_rm
-	$(DOCKER_MAINNET) -i $(IMG) $(RUN_SHELL)
+	$(DOCKER_MAINNET) -i $(IMG)
 
 
 
