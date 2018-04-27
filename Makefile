@@ -11,10 +11,10 @@ build:
 	sudo docker build -t $(IMG) .
 
 alice_rm:
-	sudo docker rm -f alice-mainnet
+	sudo docker rm -f doichain-alice
 
 bob_rm:
-	sudo docker rm -f bob-mainnet
+	sudo docker rm -f doichain-bob
 
 alice_shell: build alice_rm
 	$(DOCKER_ALICE) -i $(IMG) $(RUN_SHELL)
