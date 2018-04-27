@@ -22,16 +22,16 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-alice-regtest: build alice_rm
+alice-regtest: build
 	$(DOCKER_ALICE) -i $(IMG) 
 
-bob-regtest: build bob_rm
+bob-regtest: build
 	$(DOCKER_BOB) -i $(IMG) 
 
-testnet: build testnet_rm
+testnet: build
 	$(DOCKER_TESTNET) -i $(IMG) 
 
-mainnet_shell: build mainnet_rm
+mainnet_shell: build
 	$(DOCKER_MAINNET) -i $(IMG)
 
 
