@@ -19,8 +19,8 @@ if [ -z "$RPC_USER" ]; then
 fi
 
 if [ -z "$RPC_PASSWORD" ]; then
-	echo "generating password"
-	RPC_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs )
+	#echo "generating password"
+	RPC_PASSWORD='generated-password' #$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs )
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 

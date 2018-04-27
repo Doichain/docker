@@ -11,8 +11,8 @@ ENV CONNECTION_NODE 5.9.154.226
 ENV DAPP_CONFIRM false
 ENV DAPP_DEBUG false
 ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
-ENV DAPP_PORT 80
-ENV DAPP_HOST ""
+ENV DAPP_PORT 3000
+ENV DAPP_HOST "localhost"
 ENV DAPP_SEND true
 ENV DAPP_SMTP_USER ""
 ENV DAPP_SMTP_HOST ""
@@ -50,6 +50,10 @@ RUN apt-get update && apt-get install -y \
 	pkg-config \
 	sudo \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN apt-get install -y --no-install-recommends bsdtar
+RUN export tar='bsdtar'
+
 
 #Install locales
 RUN locale-gen ${OS_LOCALE}
