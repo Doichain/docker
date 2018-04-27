@@ -23,8 +23,6 @@ if [ -z "$RPC_PASSWORD" ]; then
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 
-tr -dc A-Za-z0-9_ < /dev/urandom | head -c 8 | xargs 
-
 echo "daemon=1
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
