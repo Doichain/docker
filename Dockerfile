@@ -80,7 +80,7 @@ RUN mkdir .namecoin && \
 	sudo git clone --branch '0.0.4' https://github.com/Doichain/core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
-	sudo ./configure --without-gui && \
+	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests && \
 	sudo make && \
 	sudo make install
 
