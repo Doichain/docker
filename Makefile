@@ -35,9 +35,10 @@ mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
 testnet_shell: build testnet_rm
-	$(DOCKER_ALICE) -i $(IMG) $(RUN_SHELL)
+	$(DOCKER_TESTNET) -i $(IMG) $(RUN_SHELL)
 
-
+mainnet_shell: build mainnet_rm
+	$(DOCKER_MAINNET) -i $(IMG) $(RUN_SHELL)
 
 
 
