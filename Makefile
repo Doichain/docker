@@ -31,7 +31,7 @@ bob-regtest: build
 testnet: build
 	$(DOCKER_TESTNET) -i $(IMG) 
 
-mainnet_shell: build
+mainnet: build
 	$(DOCKER_MAINNET) -i $(IMG)
 
 
