@@ -1,8 +1,8 @@
 DOCKER_RUN=sudo docker run -t
 DOCKER_MAINNET=$(DOCKER_RUN)  -p 8338:8338 -p 8339:8339 --name=doichain-mainnet --hostname=doichain-mainnet
 DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p 18338:18338 -p 18339:18339 --name=doichain-testnet --hostname=doichain-testnet
-DOCKER_ALICE=$(DOCKER_RUN) -e REGTEST=true -p 18445:18445 -p 18443:18443 --name=doichain-alice --hostname=doichain-alice
-DOCKER_BOB  =$(DOCKER_RUN) -e REGTEST=true -p 19445:18445 -p 19443:18443 --name=doichain-bob --hostname=doichain-bob
+DOCKER_ALICE=$(DOCKER_RUN) -e REGTEST=true -p 18445:18445 -p 18443:18443 --name=doi-regtest-alice --hostname=doi-regtest-alice
+DOCKER_BOB  =$(DOCKER_RUN) -e REGTEST=true -p 19445:18445 -p 19443:18443 --name=doi-regtest-bob --hostname=doi-regtest-bob
 
 IMG=inspiraluna/doichain
 RUN_SHELL=bash
