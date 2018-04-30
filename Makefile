@@ -59,7 +59,7 @@ mainnet_rm:
 
 regtest%:
 	$(info creating $@) 
-ifndef RUNNING_TARGET
+ifdef RUNNING_TARGET
 	$(info       running)
 	docker rm -f $(RUNNING_TARGET)
 endif
