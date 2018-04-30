@@ -23,8 +23,13 @@ endif
 DOCKER_RUN=sudo docker run -t
 DOCKER_MAINNET=$(DOCKER_RUN)  -p $(MAINNET_HTTP_PORT):3000 -p 8338:8338 -p 8339:8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
 DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p $(TESTNET_HTTP_PORT):3000 -p 18338:18338 -p 18339:18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
+DOCKER_REGTEST =$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_BOB):3000 -p 19445:18445 -p 19443:18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
+
 DOCKER_ALICE=$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_ALICE):3000 -p 18445:18445 -p 18443:18443 -v doichain_regtest_alice:/home/doichain/data --name=$@ --hostname=$@
+
 DOCKER_BOB  =$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_BOB):3000 -p 19445:18445 -p 19443:18443 -v doichain_regtest_bob:/home/doichain/data --name=doi-regtest-bob --hostname=doi-regtest-bob
+
+RUNNING_TARGET=$(shell docker ps -aq -f status=exited -f name=$@)
 
 IMG=inspiraluna/doichain
 RUN_SHELL=bash
@@ -33,10 +38,7 @@ help:
 	$(info Usage: make <mainnet|testnet|alice-regtest|bob-regtest> HTTP_PORT=<http-port>)
 	$(info        make test)
 
-rm:
-	@echo $(target) called
-	running_target := $(shell docker ps -aq -f status=exited -f name=$(target))	
-	$(info        $(running_target))
+	
 	#if [ -z "$(docker ps -aq -f status=exited -f name=$(target))" ]; then \
     #  @echo "container running "$(target); \
     #else \
@@ -55,8 +57,14 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-alice-regtest: rm target=@1 build
-	$(DOCKER_ALICE) -i $(IMG) 
+regtest%:
+	$(info creating $@) 
+ifndef RUNNING_TARGET
+	$(info       running)
+	docker rm -f $(RUNNING_TARGET)
+endif
+	$(DOCKER_REGTEST) -i $(IMG) 
+
 
 bob-regtest: bob_rm build
 	$(DOCKER_BOB) -i $(IMG) 
