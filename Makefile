@@ -1,49 +1,42 @@
 ifndef HTTP_PORT 
-	MAINNET_HTTP_PORT=80
-else
-	MAINNET_HTTP_PORT=HTTP_PORT
+	HTTP_PORT=80
 endif
-ifndef HTTP_PORT 
-TESTNET_HTTP_PORT=81
-else
-	TESTNET_HTTP_PORT=HTTP_PORT
+
+ifndef RPC_PORT 
+	RPC_PORT=8339
 endif
-ifndef HTTP_PORT
-	REGTEST_HTTP_PORT_ALICE=83
-else
-	REGTEST_HTTP_PORT_ALICE=HTTP_PORT
-endif
-ifndef HTTP_PORT
-	REGTEST_HTTP_PORT_BOB=84
-else
-	REGTEST_HTTP_PORT_BOB=HTTP_PORT
+
+ifndef PORT 
+	PORT=8338
 endif
 
 
 DOCKER_RUN=sudo docker run -t
-DOCKER_MAINNET=$(DOCKER_RUN)  -p $(MAINNET_HTTP_PORT):3000 -p 8338:8338 -p 8339:8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
-DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p $(TESTNET_HTTP_PORT):3000 -p 18338:18338 -p 18339:18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
-DOCKER_REGTEST =$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_BOB):3000 -p 19445:18445 -p 19443:18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
+DOCKER_MAINNET=$(DOCKER_RUN)  -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
+DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
+DOCKER_REGTEST =$(DOCKER_RUN) -e REGTEST=true -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
 
-DOCKER_ALICE=$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_ALICE):3000 -p 18445:18445 -p 18443:18443 -v doichain_regtest_alice:/home/doichain/data --name=$@ --hostname=$@
-
-DOCKER_BOB  =$(DOCKER_RUN) -e REGTEST=true -p $(REGTEST_HTTP_PORT_BOB):3000 -p 19445:18445 -p 19443:18443 -v doichain_regtest_bob:/home/doichain/data --name=doi-regtest-bob --hostname=doi-regtest-bob
-
-RUNNING_TARGET=$(shell docker ps -aq -f status=exited -f name=$@)
+#-f status=exited
+RUNNING_TARGET=$(shell docker ps -aq -f name=$@)
+PORT_EXISTS=$(shell lsof -i:$(HTTP_PORT) | grep LISTEN | wc -l)
 
 IMG=inspiraluna/doichain
 RUN_SHELL=bash
 
+default: help
+
 help:
-	$(info Usage: make <mainnet|testnet|alice-regtest|bob-regtest> HTTP_PORT=<http-port>)
+	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
 	$(info        make test)
 
-	
-	#if [ -z "$(docker ps -aq -f status=exited -f name=$(target))" ]; then \
-    #  @echo "container running "$(target); \
-    #else \
-    #  œecho $(target)" not running";sudo docker rm -f $(target) ; \
-  	#fi
+
+port:
+ifeq ($(strip ${PORT_EXISTS}),1) 
+		$(info http port seems already in use!  ${PORT_EXISTS}) 
+		exit 1 ;
+else
+		$(info http port $(HTTP_PORT) seems free - truyin to use it...)
+endif
 
 build:
 	sudo docker build -t $(IMG) .
@@ -57,11 +50,11 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-regtest%:
+regtest%: port
 	$(info creating $@) 
 ifdef RUNNING_TARGET
-	$(info       running)
-	docker rm -f $(RUNNING_TARGET)
+		$(info       running s$(RUNNING_TARGET)s)
+		docker rm -f $(RUNNING_TARGET)
 endif
 	$(DOCKER_REGTEST) -i $(IMG) 
 
