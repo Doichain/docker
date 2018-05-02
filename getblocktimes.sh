@@ -1,5 +1,8 @@
 #!/bin/bash
-
+#
+# Nico Krause (nico@le-space.de)
+# This bash script prints out the difficulty and its block times of the last 50 blocks
+#
 LASTBLOCK=$(namecoin-cli getchaintips | jq '.[0].height' | sed 's/\"//g')
 echo "lastblock:"$LASTBLOCK
 LAST_TIME=0

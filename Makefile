@@ -10,15 +10,16 @@ ifndef PORT
 	PORT=8338
 endif
 
-
 DOCKER_RUN=sudo docker run -t
 DOCKER_MAINNET=$(DOCKER_RUN)  -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
 DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
 DOCKER_REGTEST =$(DOCKER_RUN) -e REGTEST=true -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
 
-#-f status=exited
 RUNNING_TARGET=$(shell docker ps -aq -f name=$@)
-PORT_EXISTS=$(shell lsof -i:$(HTTP_PORT) | grep LISTEN | wc -l)
+HTTPPORT_EXISTS=$(shell lsof -i:$(HTTP_PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
+RPCPORT_EXISTS=$(shell lsof -i:$(RPC_PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
+P2PPORT_EXISTS=$(shell lsof -i:$(PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
+
 
 IMG=inspiraluna/doichain
 RUN_SHELL=bash
@@ -29,13 +30,28 @@ help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
 	$(info        make test)
 
-
-port:
-ifeq ($(strip ${PORT_EXISTS}),1) 
-		$(info http port seems already in use!  ${PORT_EXISTS}) 
+http_port:
+ifeq ($(strip ${HTTPPORT_EXISTS}),1) 
+		$(info http port seems already in use!  ${HTTPPORT) 
 		exit 1 ;
 else
-		$(info http port $(HTTP_PORT) seems free - truyin to use it...)
+		$(info http port $(HTTPPORT) seems free - truyin to use it...)
+endif
+
+rpc_port:
+ifeq ($(strip ${RPCPORT_EXISTS}),1) 
+		$(info rpc port seems already in use!  ${RPC_PORT}) 
+		exit 1 ;
+else
+		$(info rpc port $(RPC_PORT) seems free - truyin to use it...)
+endif
+
+p2pport:
+ifeq ($(strip ${P2PPORT_EXISTS}),1) 
+		$(info p2p port seems already in use!  ${PORT}) 
+		exit 1 ;
+else
+		$(info p2p port $(PORT) seems free - truyin to use it...)
 endif
 
 build:
@@ -50,7 +66,7 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-regtest%: port
+regtest%: http_port rpc_port p2pport
 	$(info creating $@) 
 ifdef RUNNING_TARGET
 		$(info       running s$(RUNNING_TARGET)s)
@@ -71,6 +87,8 @@ mainnet: mainnet_rm build
 regtest: alice-regtest bob-regtest
 
 test: 
+	#start alice on port 83
+	#start bob on port 84
 	#curl connect to RCP of alice and create new doichain address
 	#curl generate 110 new blocks and send it to generated doichain address
 	#curl connect to RPC of bob and create new doichain address
