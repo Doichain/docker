@@ -10,15 +10,16 @@ ifndef PORT
 	PORT=8338
 endif
 
-DOCKER_RUN=sudo docker run -t
-DOCKER_MAINNET=$(DOCKER_RUN)  -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
+
+DOCKER_RUN=sudo docker run -td
+DOCKER_MAINNET=$(DOCKER_RUN) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
 DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true  -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
-DOCKER_REGTEST =$(DOCKER_RUN) -e REGTEST=true -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
+DOCKER_REGTEST=$(DOCKER_RUN) -e REGTEST=true -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18443 -v $@:/home/doichain/data --name=$@ --hostname=$@
 
 RUNNING_TARGET=$(shell docker ps -aq -f name=$@)
-HTTPPORT_EXISTS=$(shell lsof -i:$(HTTP_PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
-RPCPORT_EXISTS=$(shell lsof -i:$(RPC_PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
-P2PPORT_EXISTS=$(shell lsof -i:$(PORT) | grep LISTEN | wc -l) #cannot recognise my webserver for some reason
+HTTPPORT_EXISTS=$(shell sudo lsof -i:$(HTTP_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
+RPCPORT_EXISTS=$(shell sudo lsof -i:$(RPC_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
+P2PPORT_EXISTS=$(shell sudo lsof -i:$(PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 
 
 IMG=inspiraluna/doichain
@@ -31,27 +32,30 @@ help:
 	$(info        make test)
 
 http_port:
-ifeq ($(strip ${HTTPPORT_EXISTS}),1) 
-		$(info http port seems already in use!  ${HTTPPORT) 
-		exit 1 ;
+	$(info checking port $(HTTP_PORT) -$(filter-out \ , $(strip ${HTTPPORT_EXISTS}))-) 
+ifeq ($(filter-out \ , $(strip ${HTTPPORT_EXISTS})), ) 
+	$(info http port $(HTTP_PORT) seems free - truying to use it...)
 else
-		$(info http port $(HTTPPORT) seems free - truyin to use it...)
+	$(info http port $(HTTP_PORT) seems already in use - e.g. use HTTP_PORT=<http-port> !)
+	exit 1 ;
 endif
 
 rpc_port:
-ifeq ($(strip ${RPCPORT_EXISTS}),1) 
+	$(info checking rpc-port $(RPC_PORT) -$(filter-out \ , $(strip ${RPCPORT_EXISTS}))-) 
+ifneq ($(filter-out \ , $(strip ${RPCPORT_EXISTS})), )  
 		$(info rpc port seems already in use!  ${RPC_PORT}) 
 		exit 1 ;
 else
-		$(info rpc port $(RPC_PORT) seems free - truyin to use it...)
+		$(info rpc port $(RPC_PORT) seems free - truying to use it...)
 endif
 
 p2pport:
-ifeq ($(strip ${P2PPORT_EXISTS}),1) 
+	$(info checking p2p-port $(PORT) -$(filter-out \ , $(strip ${P2PPORT_EXISTS}))-) 
+ifneq ($(filter-out \ , $(strip ${P2PPORT_EXISTS})), )  
 		$(info p2p port seems already in use!  ${PORT}) 
 		exit 1 ;
 else
-		$(info p2p port $(PORT) seems free - truyin to use it...)
+		$(info p2p port $(PORT) seems free - truying to use it...)
 endif
 
 build:
@@ -67,9 +71,9 @@ mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
 regtest%: http_port rpc_port p2pport
-	$(info creating $@) 
-ifdef RUNNING_TARGET
-		$(info       running s$(RUNNING_TARGET)s)
+	$(info creating $@ ) 
+ifneq ($(filter-out \ , $(strip ${RUNNING_TARGET})),)  	
+		$(info running: -$(RUNNING_TARGET)-)
 		docker rm -f $(RUNNING_TARGET)
 endif
 	$(DOCKER_REGTEST) -i $(IMG) 
