@@ -47,7 +47,14 @@ compile:
 
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
-	$(info        make test)
+	$(info        make test - creates a regtest network, connects alice and bob, generates 110 blocks, sends 10 to bob)
+	$(info        make test_rm - deletes regtest containers - but leaves volumes untouched)
+	$(info        make all - compile and test )
+	$(info        connect-alice-to-bob - connect alice with bob in regtest network)
+	$(info 		  generate-110 - generate 110 blocks in regtest network)
+	$(info 		  send-10-to-bob - send 10 doi to bob)
+	$(info 		  name_doi - test name_doi)
+
 
 http_port:
 	$(info checking port $(HTTP_PORT) -$(filter-out \ , $(strip ${HTTPPORT_EXISTS}))-) 
@@ -145,10 +152,10 @@ name_doi:
 	sleep 3
 	
 	#check if transaction already arrived at bobs
-	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_fee)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
-	$(info doi transaction arrived?  ($(txid_doi))) 
-	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_doi)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
-	$(info doi transaction arrived?  ($(txid_doi)))
+	$(eval txid_fee_result=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_fee)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
+	$(info doi transaction arrived?  ($(txid_fee_result))) 
+	$(eval txid_doi_result=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_doi)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
+	$(info doi transaction arrived?  ($(txid_doi_result)))
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "generatetoaddress", "params": [1,$(ALICE_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result'
 	
 
@@ -171,7 +178,7 @@ test:
 	@$(MAKE) -e -f $(THIS_FILE) send-10-to-bob
 	
 	#test simple name-doi and send it to another addresss
-	@$(MAKE) -e -f $(THIS_FILE) name_doi
+	@$(MAKE) -j 1 -e -f $(THIS_FILE) name_doi
 
 	##dApp tests
 	#curl to alice dapp and autenticate, get userId and token
