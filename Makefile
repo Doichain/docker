@@ -47,6 +47,7 @@ compile:
 
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
+	$(info 		  make clean - removes $(IMG) the images and container - must be build again
 	$(info        make test - creates a regtest network, connects alice and bob, generates 110 blocks, sends 10 to bob)
 	$(info        make test_rm - deletes regtest containers - but leaves volumes untouched)
 	$(info        make all - compile and test )
@@ -109,7 +110,10 @@ mainnet: mainnet_rm build
 	$(DOCKER_MAINNET) -i $(IMG)
 
 test_rm:
-	docker rm -f regtest-bob regtest-alice
+	docker rm -fv regtest-bob regtest-alice 
+
+clean: test_rm
+	docker rmi -f $(IMG)
 
 connect-alice-to-bob:
 	#get internal docker ipaddress of alice and let bob connect to alice
