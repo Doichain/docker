@@ -75,9 +75,6 @@ endif
 build:
 	sudo docker build -t $(IMG) .
 	
-bob_rm:
-	sudo docker rm -f doichain-bob
-
 testnet_rm:
 	sudo docker rm -f doichain-testnet
 
@@ -92,9 +89,6 @@ ifneq ($(RUNNING_TARGET),)
 endif 
 	$(DOCKER_REGTEST) -i $(IMG) 
 
-bob-regtest: bob_rm build
-	$(DOCKER_BOB) -i $(IMG) 
-
 testnet: testnet_rm build
 	$(DOCKER_TESTNET) -i $(IMG) 
 
@@ -104,19 +98,21 @@ mainnet: mainnet_rm build
 test_rm:
 	docker rm -f regtest-bob regtest-alice
 
-add-alice-ip-to-bob:
+connect-alice-to-bob:
 	#get internal docker ipaddress of alice and let bob connect to alice
 	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
 	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
-generate-110-coins-on-alice:
+generate-110:
+	#generate new addresses on alice and bob
+	#generating 110 blocks on alice
 	$(eval ALICE_NEW_ADDRESS=$(shell curl --silent --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getnewaddress", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq .result))
 	$(eval BOB_NEW_ADDRESS=$(shell curl --silent --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getnewaddress", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq .result))
 	
 	curl --silent --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "generatetoaddress", "params": [110,$(ALICE_NEW_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result'
 
-send-10-doi-to-bob:
+send-10-to-bob:
 	$(eval BOB_ADDRESS=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getaddressesbyaccount", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result[0]'))
 	$(eval ALICE_ADDRESS=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getaddressesbyaccount", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result[0]'))
 	
@@ -130,6 +126,26 @@ send-10-doi-to-bob:
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getbalance", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result'
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getbalance", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result'
 
+name_doi:
+	#create example name_doi on alice and send it to bob
+	$(eval currentTime=$(shell date +%s))
+	$(eval BOB_ADDRESS=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getaddressesbyaccount", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result[0]'))
+	$(eval ALICE_ADDRESS=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getaddressesbyaccount", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result[0]'))
+	$(info bobs address is:($(BOB_ADDRESS)))
+	$(eval txid_fee=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "sendtoaddress", "params": [$(BOB_ADDRESS),0.02] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
+	$(info sent 0.02 to Bob txid:($(txid_fee)))
+
+	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "name_doi", "params": ["e/maketest_$(currentTime)","{testparam:testval}",$(BOB_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
+	$(info sent new name_doi to Bob txid:($(txid_doi)))
+
+	#check if transaction already arrived at bobs
+	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_fee)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
+	$(info doi transaction arrived?  ($(txid_doi))) 
+	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_doi)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
+	$(info doi transaction arrived?  ($(txid_doi)))
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "generatetoaddress", "params": [1,$(ALICE_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result'
+	
+
 
 test: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
@@ -141,13 +157,15 @@ test:
 	
 
 	#curl connect to RCP of alice and create new doichain address
+	#curl connect to RPC of bob and create new doichain address
 	@$(MAKE) -e -f $(THIS_FILE) add-alice-ip-to-bob
 	#curl generate 110 new blocks and send it to generated doichain address
 	@$(MAKE) -e -f $(THIS_FILE) generate-110-coins-on-alice
-	
-	#curl connect to RPC of bob and create new doichain address
 	#curl connect to RPC of alice and send 10 doicoins to bob
 	@$(MAKE) -e -f $(THIS_FILE) send-10-doi-to-bob
+	
+	#test simple name-doi and send it to another addresss
+	@$(MAKE) -e -f $(THIS_FILE) name_doi
 
 	##dApp tests
 	#curl to alice dapp and autenticate, get userId and token
