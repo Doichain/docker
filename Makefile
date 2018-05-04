@@ -112,7 +112,7 @@ mainnet: mainnet_rm build
 test_rm:
 	docker rm -fv regtest-bob regtest-alice 
 
-clean: test_rm
+clean: 
 	docker rmi -f $(IMG)
 
 connect-alice-to-bob:
