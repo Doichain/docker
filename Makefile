@@ -41,6 +41,10 @@ default: check help
 check:
 	which jq
 
+compile:
+	docker build -t $(IMG):latest .
+
+
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
 	$(info        make test)
@@ -71,6 +75,8 @@ ifneq ($(filter-out \ , $(strip ${P2PPORT_EXISTS})), )
 else
 		$(info p2p port $(PORT) seems free - truying to use it...)
 endif
+
+all: build test
 
 build:
 	sudo docker build -t $(IMG) .
@@ -134,10 +140,10 @@ name_doi:
 	$(info bobs address is:($(BOB_ADDRESS)))
 	$(eval txid_fee=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "sendtoaddress", "params": [$(BOB_ADDRESS),0.02] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
 	$(info sent 0.02 to Bob txid:($(txid_fee)))
-
 	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "name_doi", "params": ["e/maketest_$(currentTime)","{testparam:testval}",$(BOB_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
 	$(info sent new name_doi to Bob txid:($(txid_doi)))
-
+	sleep 3
+	
 	#check if transaction already arrived at bobs
 	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_fee)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
 	$(info doi transaction arrived?  ($(txid_doi))) 
@@ -158,11 +164,11 @@ test:
 
 	#curl connect to RCP of alice and create new doichain address
 	#curl connect to RPC of bob and create new doichain address
-	@$(MAKE) -e -f $(THIS_FILE) add-alice-ip-to-bob
+	@$(MAKE) -e -f $(THIS_FILE) connect-alice-to-bob
 	#curl generate 110 new blocks and send it to generated doichain address
-	@$(MAKE) -e -f $(THIS_FILE) generate-110-coins-on-alice
+	@$(MAKE) -e -f $(THIS_FILE) generate-110
 	#curl connect to RPC of alice and send 10 doicoins to bob
-	@$(MAKE) -e -f $(THIS_FILE) send-10-doi-to-bob
+	@$(MAKE) -e -f $(THIS_FILE) send-10-to-bob
 	
 	#test simple name-doi and send it to another addresss
 	@$(MAKE) -e -f $(THIS_FILE) name_doi
