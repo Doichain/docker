@@ -107,7 +107,7 @@ endif
 testnet%: http_port rpc_port p2pport
 	$(DOCKER_TESTNET) -i $(IMG) 
 
-mainnet: mainnet_rm build
+mainnet: build
 	$(DOCKER_MAINNET) -i $(IMG)
 
 test_rm:
