@@ -24,8 +24,8 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
 DOCKER_RUN=sudo docker run -td
 DOCKER_MAINNET=$(DOCKER_RUN) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_main:/home/doichain/data --name=doichain-mainnet --hostname=doichain-mainnet
-DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_testnet:/home/doichain/data --name=doichain-testnet --hostname=doichain-testnet
-DOCKER_REGTEST=$(DOCKER_RUN) -e REGTEST=true -e RPC_ALLOW_IP=::/0 -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18332 -v $@:/home/doichain/data --name=$@ --hostname=$@
+DOCKER_TESTNET=$(DOCKER_RUN) -e TESTNET=true -e RPC_ALLOW_IP=::/0 -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_$@:/home/doichain/data --name=$@ --hostname=$@
+DOCKER_REGTEST=$(DOCKER_RUN) -e REGTEST=true -e RPC_ALLOW_IP=::/0 -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18332 -v doichain_$@:/home/doichain/data --name=$@ --hostname=$@
 
 private RUNNING_TARGET:=$(shell docker ps -aq -f name=$@)
 
@@ -47,8 +47,9 @@ compile:
 
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
-	$(info 		  make clean - removes $(IMG) the images and container - must be build again
-	$(info        make test - creates a regtest network, connects alice and bob, generates 110 blocks, sends 10 to bob)
+	$(info 		  make clean - removes $(IMG) image and containers)
+	$(info        make test_regtest - creates a regtest network, connects alice and bob, generates 110 blocks, sends 10 to bob)
+	$(info        make test_testnet - creates a testnet network, connects alice and bob, disables initial-blockdownload, block-validation and gets ready for mining. after receiving enough blocks, it normalises difficulty and enables block validation and verification)
 	$(info        make test_rm - deletes regtest containers - but leaves volumes untouched)
 	$(info        make all - compile and test )
 	$(info        connect-alice-to-bob - connect alice with bob in regtest network)
@@ -103,7 +104,7 @@ ifneq ($(RUNNING_TARGET),)
 endif 
 	$(DOCKER_REGTEST) -i $(IMG) 
 
-testnet: testnet_rm build
+testnet%: http_port rpc_port p2pport
 	$(DOCKER_TESTNET) -i $(IMG) 
 
 mainnet: mainnet_rm build
@@ -161,16 +162,28 @@ name_doi:
 	$(eval txid_doi_result=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getrawtransaction", "params": ["$(txid_doi)", 1] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/ | jq '.result.vout.scriptPubKey.nameOp' ))
 	$(info doi transaction arrived?  ($(txid_doi_result)))
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "generatetoaddress", "params": [1,$(ALICE_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result'
+
+
+test-testnet:
+	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
+	@$(MAKE) -e -f $(THIS_FILE) testnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
+	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
+	@$(MAKE) -e -f $(THIS_FILE) testnet-bob HTTP_PORT=$(HTTP_PORT_BOB) RPC_PORT=$(RPC_PORT_BOB) PORT=$(PORT_BOB)
+	sleep 3
+	@echo started alice and bob as testnet doichain nodes!
 	
+	#connect to alice switch branch to disabled-validation
+	#start p2pool on alice node so it checks current difficulty with each found block
+	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
 
 
-test: 
+test-regtest: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) regtest-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) regtest-bob HTTP_PORT=$(HTTP_PORT_BOB) RPC_PORT=$(RPC_PORT_BOB) PORT=$(PORT_BOB)
 	sleep 3
-	@echo started alice and bob as doichain nodes!
+	@echo started alice and bob as regtest doichain nodes!
 	
 
 	#curl connect to RCP of alice and create new doichain address
