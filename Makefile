@@ -103,7 +103,7 @@ ifneq ($(RUNNING_TARGET),)
 endif 
 	$(DOCKER_REGTEST) -i $(IMG) 
 
-testnet: testnet_rm build
+testnet: 
 	$(DOCKER_TESTNET) -i $(IMG) 
 
 mainnet: mainnet_rm build
