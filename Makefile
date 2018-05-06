@@ -110,7 +110,11 @@ testnet%: http_port rpc_port p2pport
 mainnet: build
 	$(DOCKER_MAINNET) -i $(IMG)
 
-test_rm:
+
+test_testnet_rm:
+	docker rm -fv testnet-bob testnet-alice 
+
+test_regtest_rm:
 	docker rm -fv regtest-bob regtest-alice 
 
 clean: 
@@ -173,6 +177,17 @@ test-testnet:
 	@echo started alice and bob as testnet doichain nodes!
 	
 	#connect to alice switch branch to disabled-validation
+	docker exec -w /home/doichain/namecoin-core testnet-alice namecoin-cli stop
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
+	docker exec -w /home/doichain/namecoin-core testnet-alice namecoind -testnet 
+	
+	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
+	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+
 	#start p2pool on alice node so it checks current difficulty with each found block
 	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
 
