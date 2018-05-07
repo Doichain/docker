@@ -193,10 +193,10 @@ new_testnet:
 	docker exec testnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak 's/consensus.nPowTargetTimespan = 2 * 60 * 60;/consensus.nPowTargetTimespan = 0.1 * 60 * 60; //testnet /g' src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.1/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
-	docker exec -w /home/doichain/namecoin-core testnet-alice namecoind -testnet -walletnotify=/home/doichain/data/namecoin/check-difficulty.sh %s
+	docker exec -w /home/doichain/ testnet-alice namecoind -testnet -walletnotify=/home/doichain/data/namecoin/checkdifficulty.sh %s
 	
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
