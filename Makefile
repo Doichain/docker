@@ -98,6 +98,15 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
+%: http_port rpc_port p2pport
+	$(DOCKER_MAINNET) -i $(IMG)
+	
+mainnet%: http_port rpc_port p2pport
+	$(DOCKER_MAINNET) -i $(IMG)
+
+testnet%: http_port rpc_port p2pport
+	$(DOCKER_TESTNET) -i $(IMG) 
+
 regtest%: http_port rpc_port p2pport
 	$(info -$(RUNNING_TARGET)-) 
 ifneq ($(RUNNING_TARGET),)  	
@@ -105,13 +114,6 @@ ifneq ($(RUNNING_TARGET),)
 	docker rm -f $(RUNNING_TARGET) 
 endif 
 	$(DOCKER_REGTEST) -i $(IMG) 
-
-testnet%: http_port rpc_port p2pport
-	$(DOCKER_TESTNET) -i $(IMG) 
-
-mainnet%: http_port rpc_port p2pport
-	$(DOCKER_MAINNET) -i $(IMG)
-
 
 test_testnet_rm:
 	docker rm -fv testnet-bob testnet-alice 
