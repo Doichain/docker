@@ -23,9 +23,9 @@ PORT_BOB=28338
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
 DOCKER_RUN=sudo docker run -td
-DOCKER_RUN_DEFAULT_ENV=-e DAPP_DEBUG=true -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true'
-DOCKER_RUN_OTHER_ENV= -e RPC_USER='admin' -e RPC_PASSWORD='change-pw' -e RPC_HOST=localhost -e DAPP_HOST=your-domain-name-or-ip -e DAPP_SMTP_HOST=localhost -e DAPP_SMTP_USER=doichain -e DAPP_SMTP_PASS='doichain-mail-pw!' -e DAPP_SMTP_PORT=25 -e CONFIRM_ADDRESS=xxx
-DOCKER_MAINNET=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_$@:/home/doichain/data --name=doichain_$@ --hostname=doichain-$@
+DOCKER_RUN_DEFAULT_ENV=-e DAPP_DEBUG=true 
+DOCKER_RUN_OTHER_ENV=-e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER='admin' -e RPC_PASSWORD='change-pw' -e RPC_HOST=localhost -e DAPP_HOST=your-domain-name-or-ip -e DAPP_SMTP_HOST=localhost -e DAPP_SMTP_USER=doichain -e DAPP_SMTP_PASS='doichain-mail-pw!' -e DAPP_SMTP_PORT=25 -e CONFIRM_ADDRESS=xxx
+DOCKER_MAINNET=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_$@:/home/doichain/data --name=doichain_$@ --hostname=doichain_$@
 DOCKER_TESTNET=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) -e TESTNET=true -e RPC_ALLOW_IP=::/0 -p $(HTTP_PORT):3000 -p $(PORT):18338 -p $(RPC_PORT):18339 -v doichain_$@:/home/doichain/data --name=$@ --hostname=$@
 DOCKER_REGTEST=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) -e REGTEST=true -e RPC_ALLOW_IP=::/0 -p $(HTTP_PORT):3000 -p $(PORT):18445 -p $(RPC_PORT):18332 -v doichain_$@:/home/doichain/data --name=$@ --hostname=$@
 
@@ -98,9 +98,6 @@ testnet_rm:
 mainnet_rm:
 	sudo docker rm -f doichain-mainnet
 
-%: http_port rpc_port p2pport
-	$(DOCKER_MAINNET) -i $(IMG)
-	
 mainnet%: http_port rpc_port p2pport
 	$(DOCKER_MAINNET) -i $(IMG)
 
