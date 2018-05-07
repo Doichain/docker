@@ -182,7 +182,7 @@ connect-bob:
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 
-test_testnet:
+new_testnet:
 	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) testnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
@@ -193,9 +193,10 @@ test_testnet:
 	docker exec testnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak 's/consensus.nPowTargetTimespan = 2 * 60 * 60;/consensus.nPowTargetTimespan = 0.1 * 60 * 60; //testnet /g' src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
-	docker exec -w /home/doichain/namecoin-core testnet-alice namecoind -testnet 
+	docker exec -w /home/doichain/namecoin-core testnet-alice namecoind -testnet -walletnotify=/home/doichain/data/namecoin/check-difficulty.sh %s
 	
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/

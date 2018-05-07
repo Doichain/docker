@@ -40,6 +40,7 @@ RUN apt-get update && apt-get install -y \
 	jq \
 	vim \
 	jq \
+	bc \
 	bsdtar \
 	dos2unix \
 	git \
