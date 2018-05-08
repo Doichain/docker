@@ -206,6 +206,7 @@ new_testnet:
 	docker exec testnet-alice namecoind -testnet -reindex -server -walletnotify=/home/doichain/data/namecoin/checkdifficulty.sh 
 	docker exec testnet-bob namecoind -testnet -reindex -server 
 	
+	
 	#now connect bob to alice!
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
