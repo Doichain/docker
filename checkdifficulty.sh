@@ -7,14 +7,16 @@
 # stop the node and do a make, make install and 
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
 
+set -e
 diff=$(namecoin-cli getblockchaininfo |jq '.difficulty' | sed 'y/e/E/')
+echo $diff
 goal=1000
 diffHighEnough=$(echo $diff'>'$goal | bc -l)
 echo $diffHighEnough
 if ((1 == 1)); then
  echo "changing nPowTargetTimeSpan" 
- sudo sed -i.bak 's/consensus.nPowTargetTimespan = 0.1 * 60 * 60; //testnet /consensus.nPowTargetTimespan = 14 * 24 * 60 * 60; //testnet /g' /home/doichain/namecoin-core/src/chainparams.cpp
+ sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 15 * 24 * 60 * 60/g" /home/doichain/namecoin-core/src/chainparams.cpp
  namecoin-cli stop
- cd /home/doichain/namecoin-core; make; make install
- i#namecoind -testnet -walletnotify=/home/doihcain/data/.namecoin/normalise-difficulty.sh &
+ cd /home/doichain/namecoin-core; sudo make; sudo make install
+ namecoind -testnet -walletnotify=/home/doihcain/data/.namecoin/normalise-difficulty.sh &
 fi
