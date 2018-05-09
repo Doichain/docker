@@ -9,9 +9,10 @@
 set -e
 diff=0
 goal=1000
-diffHighEnough=$(echo $diff'>'$goal | bc -l)
+diffHighEnough=0
  while [  $diffHighEnough == 0 ]; do
-	 diff=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty' | sed 'y/e/E/')
+     diff=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty' | sed 'y/e/E/')
+     diffHighEnough=$(echo $diff'>'$goal | bc -l)
      echo "current difficulty is"$diff 
      sleep 5
  done
