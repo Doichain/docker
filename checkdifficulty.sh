@@ -16,9 +16,16 @@ diffHighEnough=$(echo $diff'>'$goal | bc -l)
      sleep 5
  done
 
- echo "changing nPowTargetTimeSpan and compiling this namecoin again" 
+ echo "alice: changing nPowTargetTimeSpan and compiling this namecoind again" 
  docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
  docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
  docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
  docker exec testnet-alice namecoind -testnet
-fi
+
+ echo "bob: changing nPowTargetTimeSpan and compiling this namecoind again" 
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
+ docker exec testnet-bob namecoind -testnet
+
+echo "Now normalise nPowTargetTimespani again" 
