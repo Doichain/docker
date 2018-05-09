@@ -14,7 +14,7 @@ diffHighEnough=$(echo $diff'>'$goal | bc -l)
 echo $diffHighEnough
 if (($diffHighEnough == 1)); then
  echo "changing nPowTargetTimeSpan and compiling this namecoin again" > /home/doichain/changing.txt
- sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 15 * 24 * 60 * 60/g" /home/doichain/namecoin-core/src/chainparams.cpp
+ sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15 * 24 * 60 * 60/g" /home/doichain/namecoin-core/src/chainparams.cpp
  namecoin-cli stop
  cd /home/doichain/namecoin-core; sudo make; sudo make install
  namecoind -testnet -walletnotify=/home/doihcain/data/.namecoin/normalise-difficulty.sh &
