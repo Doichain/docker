@@ -177,6 +177,7 @@ name_doi:
 
 connect-bob:
 	#get internal docker ipaddress of alice and let bob connect to alice
+	sleep 3
 	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
 	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
