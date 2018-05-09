@@ -182,14 +182,6 @@ connect-bob:
 	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
-dev:
-	 COUNTER=20
-     until [  $COUNTER -lt 10 ]; do
-         echo COUNTER $COUNTER
-         let COUNTER-=1
-     done
-
-
 new_testnet:
 	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) testnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
@@ -211,7 +203,7 @@ new_testnet:
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 
-	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=64 -server -walletnotify=/home/doichain/data/namecoin/checkdifficulty.sh 
+	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=64 -server
 	docker exec testnet-bob namecoind -testnet -reindex -server 
 	
 	
