@@ -203,14 +203,14 @@ new_testnet:
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 
-	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=64 -server
+	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=256 -server
 	docker exec testnet-bob namecoind -testnet -reindex -server 
 	
 	
 	#now connect bob to alice!
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	
+	./checkdifficulty.sh
 	#start p2pool on alice node so it checks current difficulty with each found block
 	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
 
