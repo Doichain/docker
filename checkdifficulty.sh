@@ -6,7 +6,6 @@
 # As soon the difficulty of a block is higher then 1000 we change 'consensus.nPowTargetTimespan' to 14 * 24 * 60 * 60 
 # stop the node and do a make, make install and 
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
-set -e
 diff=0
 goal=1000
 diffHighEnough=0
