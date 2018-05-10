@@ -203,7 +203,7 @@ new_testnet:
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 
-	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=64 -server
+	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=2048 -server
 	docker exec testnet-bob namecoind -testnet -reindex -server 
 	
 	
@@ -213,7 +213,7 @@ new_testnet:
 	
 	#start p2pool on alice node so it checks current difficulty with each found block
 	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
-
+	./checkdifficulty.sh
 
 test_regtest: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)

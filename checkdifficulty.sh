@@ -11,6 +11,7 @@ goal=1000
 diffHighEnough=0
 while [ $diffHighEnough -lt 1000 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
+
      if [[ $? -ne 0 ]]; then
       echo "failed with returncode $?"
       diff=0
@@ -18,9 +19,15 @@ while [ $diffHighEnough -lt 1000 ]; do
       echo $result
       continue
      else
+       diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
+	if [ "$diff" -eq "$diff" ] 2>/dev/null; then
+  	echo number
+	else
+  	echo not a number
+  	#continue
+	fi
        echo "call succeeded"$result
        #result=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty')
-       diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
        diffHighEnough=$(echo $diff'>'$goal | bc -l)
        echo "current difficulty is"$diff 
       sleep 5	
