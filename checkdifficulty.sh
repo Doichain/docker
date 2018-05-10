@@ -20,16 +20,15 @@ while [ $diffHighEnough -lt 1000 ]; do
       continue
      else
        diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
-	if [ "$diff" -eq "$diff" ] 2>/dev/null; then
-  	echo number
-	else
-  	echo not a number
-  	#continue
-	fi
+       echo "current difficulty is:"$diff 
+	#echo 'if(1 == 2) print "true" else print "false"' | bc
        echo "call succeeded"$result
        #result=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty')
        diffHighEnough=$(echo $diff'>'$goal | bc -l)
-       echo "current difficulty is"$diff 
+       if [[ $diffHighEnough == 1 ]]; then
+       break;
+       fi
+       
       sleep 5	
      fi
  done
@@ -48,5 +47,6 @@ while [ $diffHighEnough -lt 1000 ]; do
  docker exec -w /home/doichain/namecoin-core testnet-bob namecoin-cli stop
  docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 echo "Now normalise nPowTargetTimespani again" 
- docker exec testnet-bob namecoind -testnet
-
+ #docker exec testnet-bob namecoind -testnet -addnode=5.9.154.226
+ make connect-bob
+fi
