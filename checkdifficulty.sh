@@ -6,30 +6,40 @@
 # As soon the difficulty of a block is higher then 1000 we change 'consensus.nPowTargetTimespan' to 14 * 24 * 60 * 60 
 # stop the node and do a make, make install and 
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
-set -e
 diff=0
 goal=1000
 diffHighEnough=0
- while [  $diffHighEnough == 0 ]; do
-	 diff=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty' | sed 'y/e/E/')
-	 diffHighEnough=$(echo $diff'>'$goal | bc -l)
-     echo "current difficulty is"$diff 
-     sleep 5
+while [ $diffHighEnough -lt 1000 ]; do
+     result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
+     if [[ $? -ne 0 ]]; then
+      echo "failed with returncode $?"
+      diff=0
+      diffHighEnough=0
+      echo $result
+      continue
+     else
+       echo "call succeeded"$result
+       #result=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty')
+       diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
+       diffHighEnough=$(echo $diff'>'$goal | bc -l)
+       echo "current difficulty is"$diff 
+      sleep 5	
+     fi
  done
-exit; 
+     if [[ "$" != 0 ]]; then
 
-echo "changing nPowTargetTimeSpan and compiling this namecoin again" 
+ echo "alice: changing nPowTargetTimeSpan and compiling this namecoind again" 
+ docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15/g" src/chainparams.cpp
+ docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
+ docker exec -w /home/doichain/namecoin-core testnet-alice namecoin-cli stop
+ docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
+ docker exec testnet-alice namecoind -testnet
 
+ echo "bob: changing nPowTargetTimeSpan and compiling this namecoind again" 
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15/g" src/chainparams.cpp
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
+ docker exec -w /home/doichain/namecoin-core testnet-bob namecoin-cli stop
+ docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
+echo "Now normalise nPowTargetTimespani again" 
+ docker exec testnet-bob namecoind -testnet
 
-docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
-docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
-docker exec -w /home/doichain/namecoin-core testnet-alice namecoin-cli stop
-docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
-docker exec -w /home/doichain/namecoin-core testnet-alice namecoind -testnet -server 
-
-
-docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
-docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
-docker exec -w /home/doichain/namecoin-core testnet-bob namecoin-cli stop
-docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
-docker exec -w /home/doichain/namecoin-core testnet-bob namecoind -testnet -server 
