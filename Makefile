@@ -236,7 +236,7 @@ new_testnet:
 
 	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=2048 -server
 	docker exec testnet-bob namecoind -testnet -reindex -server 
-	
+	sleep 3
 	
 	#now connect bob to alice!
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
