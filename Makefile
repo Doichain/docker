@@ -14,10 +14,10 @@ endif
 HTTP_PORT_ALICE=84
 HTTP_PORT_BOB=85
 
-RPC_PORT_ALICE=18339
+RPC_PORT_ALICE=8339
 RPC_PORT_BOB=28339
 
-PORT_ALICE=18338
+PORT_ALICE=8338
 PORT_BOB=28338
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
@@ -92,12 +92,6 @@ all: build test
 build:
 	sudo docker build -t $(IMG) .
 	
-testnet_rm:
-	sudo docker rm -f doichain-testnet
-
-mainnet_rm:
-	sudo docker rm -f doichain-mainnet
-
 mainnet%: http_port rpc_port p2pport
 	$(DOCKER_MAINNET) -i $(IMG)
 
@@ -112,8 +106,13 @@ ifneq ($(RUNNING_TARGET),)
 endif 
 	$(DOCKER_REGTEST) -i $(IMG) 
 
+test_mainnet_rm:
+	docker rm -fv doichain_mainnet-bob doichain_mainnet-alice 
+	docker volume rm doichain_mainnet-bob doichain_mainnet-alice
+
 test_testnet_rm:
 	docker rm -fv testnet-bob testnet-alice 
+	docker volume rm testnet-bob testnet-alice
 
 test_regtest_rm:
 	docker rm -fv regtest-bob regtest-alice 
@@ -181,6 +180,38 @@ connect-bob:
 	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
 	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+
+new_premainnet:
+	#starting mainnet-alice on port 84 and RPC_PORT 8339 (with send-mode dapp)
+	@$(MAKE) -e -f $(THIS_FILE) mainnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
+	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
+	@$(MAKE) -e -f $(THIS_FILE) mainnet-bob HTTP_PORT=$(HTTP_PORT_BOB) RPC_PORT=$(RPC_PORT_BOB) PORT=$(PORT_BOB)
+	sleep 3
+	
+	#connect to alice switch branch to disabled-validation
+	docker exec doichain_mainnet-alice namecoin-cli stop
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
+
+	#now also connect to bob and do the same there
+	docker exec doichain_mainnet-bob namecoin-cli stop
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
+
+	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=2048 -server
+	docker exec doichain_mainnet-bob namecoind -reindex -server 
+
+	#now connect bob to alice!
+	sleep 3
+	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' doichain_mainnet-alice))
+	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+	
 
 new_testnet:
 	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
