@@ -10,8 +10,8 @@ ifndef PORT
 	PORT=8338
 endif
 
-DOICHAIN_VER=0.0.2
-DOICHAIN_DAPP_VER=0.0.2
+DOICHAIN_VER=0.0.4
+DOICHAIN_DAPP_VER=0.0.4
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
@@ -38,7 +38,7 @@ HTTPPORT_EXISTS:=$(shell sudo lsof -i:$(HTTP_PORT) | grep LISTEN) #cannot recogn
 RPCPORT_EXISTS:=$(shell sudo lsof -i:$(RPC_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 P2PPORT_EXISTS:=$(shell sudo lsof -i:$(PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 
-IMG=inspiraluna/doichain:0.0.2
+IMG=inspiraluna/doichain:0.0.4
 RUN_SHELL=bash
 
 default: check help
@@ -187,7 +187,6 @@ new_premainnet:
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
-	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
 
@@ -220,13 +219,15 @@ new_testnet:
 	docker exec testnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
 
 	#now also connect to bob and do the same there
 	docker exec testnet-bob namecoin-cli stop
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 
