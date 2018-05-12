@@ -89,7 +89,7 @@ endif
 all: build test
 
 build:
-	sudo docker build -t $(IMG) --build-arg DOICHAIN_VER=$DOICHAIN_VER DOICHAIN_DAPP_VER=$DOICHAIN_DAPP_VER .
+	sudo docker build -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
 	
 mainnet%: http_port rpc_port p2pport
 	$(DOCKER_MAINNET) -i $(IMG)
