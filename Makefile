@@ -166,8 +166,11 @@ name_doi:
 	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
-
-new_premainnet:
+new_mainnet:
+	$(eval RPC_PORT_ALICE=8339)	
+	$(eval RPC_PORT_BOB=18339)	
+	$(eval PORT_ALICE=8338)	
+	$(eval PORT_BOB=18338)	
 	#starting mainnet-alice on port 84 and RPC_PORT 8339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) mainnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
