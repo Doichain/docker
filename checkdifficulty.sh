@@ -11,6 +11,7 @@ goal=1000
 diffHighEnough=0
 while [ $diffHighEnough -lt 1000 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
+
      if [[ $? -ne 0 ]]; then
       echo "failed with returncode $?"
       diff=0
@@ -18,11 +19,16 @@ while [ $diffHighEnough -lt 1000 ]; do
       echo $result
       continue
      else
+       diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
+       echo "current difficulty is:"$diff 
+	#echo 'if(1 == 2) print "true" else print "false"' | bc
        echo "call succeeded"$result
        #result=$(docker exec testnet-alice namecoin-cli getblockchaininfo |jq '.difficulty')
-       diff=$(echo $result |jq '.result.difficulty' | sed 'y/e/E/')
        diffHighEnough=$(echo $diff'>'$goal | bc -l)
-       echo "current difficulty is"$diff 
+       if [[ $diffHighEnough == 1 ]]; then
+       break;
+       fi
+       
       sleep 5	
      fi
  done
@@ -41,5 +47,6 @@ while [ $diffHighEnough -lt 1000 ]; do
  docker exec -w /home/doichain/namecoin-core testnet-bob namecoin-cli stop
  docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 echo "Now normalise nPowTargetTimespani again" 
- docker exec testnet-bob namecoind -testnet
-
+ #docker exec testnet-bob namecoind -testnet -addnode=5.9.154.226
+ make connect-bob
+fi
