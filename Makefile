@@ -166,8 +166,11 @@ name_doi:
 	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
-
-new_premainnet:
+new_mainnet:
+	$(eval RPC_PORT_ALICE=8339)	
+	$(eval RPC_PORT_BOB=18339)	
+	$(eval PORT_ALICE=8338)	
+	$(eval PORT_BOB=18338)	
 	#starting mainnet-alice on port 84 and RPC_PORT 8339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) mainnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
@@ -178,7 +181,7 @@ new_premainnet:
 	docker exec doichain_mainnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
 
@@ -186,11 +189,11 @@ new_premainnet:
 	docker exec doichain_mainnet-bob namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
 
-	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=2048 -server
+	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=4096 -server
 	docker exec doichain_mainnet-bob namecoind -reindex -server 
 
 	#now connect bob to alice!
