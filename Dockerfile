@@ -1,5 +1,10 @@
 FROM ubuntu
 
+ARG DOICHAIN_VER
+ARG DOICHAIN_DAPP_VER
+ENV DOICHAIN_VER $DOICHAIN_VER
+ENV DOICHAIN_DAPP_VER $DOICHAIN_DAPP_VER
+
 #Setup run vars
 ENV OS_LOCALE en_US.UTF-8
 ENV LANG ${OS_LOCALE}
@@ -82,7 +87,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install namecoin-core
 WORKDIR /home/doichain
 RUN mkdir .namecoin && \
-	sudo git clone --branch '0.0.4' https://github.com/Doichain/core.git namecoin-core && \
+	sudo git clone --branch '$DOICHAIN_VER' https://github.com/Doichain/core.git namecoin-core && \
 	cd namecoin-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" && \
@@ -90,7 +95,7 @@ RUN mkdir .namecoin && \
 	sudo make install
 
 RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone --branch '0.0.4' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
+	sudo git clone --branch '$DOICHAIN_DAPP_VER' https://github.com/Doichain/dApp.git /home/doichain/dapp && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \

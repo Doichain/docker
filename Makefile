@@ -10,6 +10,9 @@ ifndef PORT
 	PORT=8338
 endif
 
+DOICHAIN_VER=0.0.3
+DOICHAIN_DAPP_VER=0.0.3
+
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
 HTTP_PORT_BOB=85
@@ -41,11 +44,7 @@ RUN_SHELL=bash
 default: check help
 
 check:
-	which jq
-
-compile:
-	docker build -t $(IMG):latest .
-
+	which jq; which bc
 
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
@@ -90,7 +89,7 @@ endif
 all: build test
 
 build:
-	sudo docker build -t $(IMG) .
+	sudo docker build -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
 	
 mainnet%: http_port rpc_port p2pport
 	$(DOCKER_MAINNET) -i $(IMG)
@@ -241,10 +240,9 @@ new_testnet:
 	#now connect bob to alice!
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	
+	./checkdifficulty.sh
 	#start p2pool on alice node so it checks current difficulty with each found block
 	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
-	./checkdifficulty.sh
 
 test_regtest: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
