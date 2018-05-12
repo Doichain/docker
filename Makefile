@@ -119,11 +119,6 @@ test_regtest_rm:
 clean: 
 	docker rmi -f $(IMG)
 
-connect-alice-to-bob:
-	#get internal docker ipaddress of alice and let bob connect to alice
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
-	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
-	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 generate-110:
 	#generate new addresses on alice and bob
@@ -173,13 +168,6 @@ name_doi:
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 
-connect-bob:
-	#get internal docker ipaddress of alice and let bob connect to alice
-	sleep 3
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
-	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
-	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-
 new_premainnet:
 	#starting mainnet-alice on port 84 and RPC_PORT 8339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) mainnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
@@ -197,6 +185,8 @@ new_premainnet:
 
 	#now also connect to bob and do the same there
 	docker exec doichain_mainnet-bob namecoin-cli stop
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
@@ -210,7 +200,14 @@ new_premainnet:
 	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	
+	./checkdifficulty_testnet.sh
+
+connect-testnet:
+	#get internal docker ipaddress of alice and let bob connect to alice
+	sleep 3
+	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
+	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 new_testnet:
 	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
@@ -238,11 +235,17 @@ new_testnet:
 	sleep 3
 	
 	#now connect bob to alice!
-	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-bob
+	@$(MAKE) -j 1 -e -f $(THIS_FILE) connect-testnet
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	./checkdifficulty.sh
+	./checkdifficulty_mainnet.sh
 	#start p2pool on alice node so it checks current difficulty with each found block
 	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
+
+connect-regtest:
+	#get internal docker ipaddress of alice and let bob connect to alice
+	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
+	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 test_regtest: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
@@ -255,7 +258,7 @@ test_regtest:
 
 	#curl connect to RCP of alice and create new doichain address
 	#curl connect to RPC of bob and create new doichain address
-	@$(MAKE) -e -f $(THIS_FILE) connect-alice-to-bob
+	@$(MAKE) -e -f $(THIS_FILE) connect-regtest
 	#curl generate 110 new blocks and send it to generated doichain address
 	@$(MAKE) -e -f $(THIS_FILE) generate-110
 	#curl connect to RPC of alice and send 10 doicoins to bob
