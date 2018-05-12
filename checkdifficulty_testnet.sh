@@ -9,7 +9,7 @@
 diff=0
 goal=10
 diffHighEnough=0
-while [ $diffHighEnough -lt 1000 ]; do
+while [ $diffHighEnough == 0 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
 
      if [[ $? -ne 0 ]]; then
