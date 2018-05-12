@@ -181,7 +181,7 @@ new_mainnet:
 	docker exec doichain_mainnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
 
@@ -189,11 +189,11 @@ new_mainnet:
 	docker exec doichain_mainnet-bob namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
 
-	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=2048 -server
+	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=4096 -server
 	docker exec doichain_mainnet-bob namecoind -reindex -server 
 
 	#now connect bob to alice!
