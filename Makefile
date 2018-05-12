@@ -201,9 +201,9 @@ new_premainnet:
 
 new_testnet:
 	#starting testnet-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
-	@$(MAKE) -e -f $(THIS_FILE) testnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=8339 PORT=8338
+	@$(MAKE) -e -f $(THIS_FILE) testnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
-	@$(MAKE) -e -f $(THIS_FILE) testnet-bob HTTP_PORT=$(HTTP_PORT_BOB) RPC_PORT=18339 PORT=18338
+	@$(MAKE) -e -f $(THIS_FILE) testnet-bob HTTP_PORT=$(HTTP_PORT_BOB) RPC_PORT=$(RPC_PORT_BOB) PORT=$(PORT_BOB)
 	sleep 3
 	
 	#connect to alice switch branch to disabled-validation
@@ -225,14 +225,17 @@ new_testnet:
 	sleep 3
 	
 	#now connect bob to alice!
+	@$(MAKE) -e -f $(THIS_FILE) connect-testnet
+
+	#start p2pool on alice node so it checks current difficulty with each found block
+	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
+
+connect-testnet:
 	#get internal docker ipaddress of alice and let bob connect to alice
 	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
 	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
-	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/
-	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/
-	./checkdifficulty.sh
-	#start p2pool on alice node so it checks current difficulty with each found block
-	#if difficulty is high enough (so every minute are found a couple of blocks) - switch back to validation and a higher auxpowtime
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 test_regtest: 
 	#starting regtest-alice on port 84 and RPC_PORT 18339 (with send-mode dapp)
