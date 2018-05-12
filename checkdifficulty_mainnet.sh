@@ -8,7 +8,7 @@
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
 myip=5.9.154.226
 diff=0
-goal=1000
+goal=10
 diffHighEnough=0
 while [ $diffHighEnough -lt 1000 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://$myip:8339/)
@@ -47,6 +47,7 @@ docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob namecoin-cli stop
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
+docker exec doichain_mainnet-alice namecoind 
 
 ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' doichain_mainnet-alice)
 echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
