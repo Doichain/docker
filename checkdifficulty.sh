@@ -3,11 +3,11 @@
 # Nico Krause (nico@le-space.de)
 #
 # This bash script gets called by the doichain-wallet when a new block arrives.
-# As soon the difficulty of a block is higher then 1000 we change 'consensus.nPowTargetTimespan' to 14 * 24 * 60 * 60 
+# As soon the difficulty of a block is higher then 100 we change 'consensus.nPowTargetTimespan' to 14 * 24 * 60 * 60 
 # stop the node and do a make, make install and 
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
 diff=0
-goal=1000
+goal=100
 diffHighEnough=0
 while [ $diffHighEnough -lt 1000 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
