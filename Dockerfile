@@ -106,7 +106,6 @@ WORKDIR /home/doichain/scripts/
 COPY entrypoint.sh entrypoint.sh
 COPY start.sh start.sh
 COPY getblocktimes.sh getblocktimes.sh 
-COPY checkdifficulty.sh checkdifficulty.sh 
 COPY transaction.sh transaction.sh
 COPY namecoin-start.sh namecoin-start.sh
 COPY dapp-start.sh dapp-start.sh
@@ -116,7 +115,6 @@ RUN sudo dos2unix \
 	namecoin-start.sh \
 	transaction.sh \
 	getblocktimes.sh \
-	checkdifficulty.sh \
 	dapp-start.sh && \
 	sudo chmod +x \
 	entrypoint.sh \
@@ -124,7 +122,6 @@ RUN sudo dos2unix \
 	namecoin-start.sh \
     transaction.sh \
 	getblocktimes.sh \
-	checkdifficulty.sh \
 	dapp-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*

@@ -7,7 +7,7 @@
 # stop the node and do a make, make install and 
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
 diff=0
-goal=100
+goal=10
 diffHighEnough=0
 while [ $diffHighEnough -lt 1000 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:18339/)
@@ -47,6 +47,7 @@ while [ $diffHighEnough -lt 1000 ]; do
  docker exec -w /home/doichain/namecoin-core testnet-bob namecoin-cli stop
  docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
 echo "Now normalise nPowTargetTimespani again" 
- #docker exec testnet-bob namecoind -testnet -addnode=5.9.154.226
- make connect-bob
+ docker exec testnet-bob namecoind -testnet 
+ sleep 3
+ make connect-testnet
 fi
