@@ -10,6 +10,9 @@ ifndef PORT
 	PORT=8338
 endif
 
+DOICHAIN_VER=0.0.3
+DOICHAIN_DAPP_VER=0.0.3
+
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
 HTTP_PORT_BOB=85
@@ -86,7 +89,7 @@ endif
 all: build test
 
 build:
-	sudo docker build -t $(IMG) --build-arg DOICHAIN_VER=0.0.3 DOICHAIN_DAPP_VER=0.0.3 .
+	sudo docker build -t $(IMG) --build-arg DOICHAIN_VER=$DOICHAIN_VER DOICHAIN_DAPP_VER=$DOICHAIN_DAPP_VER .
 	
 mainnet%: http_port rpc_port p2pport
 	$(DOCKER_MAINNET) -i $(IMG)
