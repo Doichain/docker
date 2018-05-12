@@ -167,7 +167,12 @@ name_doi:
 
 
 
-new_premainnet:
+new_mainnet:
+        $(eval RPC_PORT_ALICE=8339)	
+        $(eval RPC_PORT_BOB=18339)	
+        $(eval PORT_ALICE=8338)	
+        $(eval PORT_BOB=18338)	
+
 	#starting mainnet-alice on port 84 and RPC_PORT 8339 (with send-mode dapp)
 	@$(MAKE) -e -f $(THIS_FILE) mainnet-alice HTTP_PORT=$(HTTP_PORT_ALICE) RPC_PORT=$(RPC_PORT_ALICE) PORT=$(PORT_ALICE)
 	#starting regtest-bob on port 85 and RPC_PORT 18339 (with confirm-mode and verify mode dapp)
