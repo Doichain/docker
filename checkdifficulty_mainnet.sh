@@ -8,7 +8,7 @@
 # start the node again with parameter -walletnotify=/home/doichain/data/.namecoin/normalise-difficulty.sh
 myip=5.9.154.226
 diff=0
-goal=10
+goal=1
 diffHighEnough=0
 while [ $diffHighEnough == 0 ]; do
      result=$(curl --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getblockchaininfo", "params": [] }' -H 'content-type: text/plain;' http://$myip:8339/)
@@ -36,14 +36,14 @@ while [ $diffHighEnough == 0 ]; do
      if [[ "$" != 0 ]]; then
 
  echo "alice: changing nPowTargetTimeSpan and compiling this namecoind again" 
- docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15/g" src/chainparams.cpp
+ docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15000 * 24/g" src/chainparams.cpp
  docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
  docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice namecoin-cli stop
  docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
  docker exec doichain_mainnet-alice namecoind 
 
 echo "bob: changing nPowTargetTimeSpan and compiling this namecoind again" 
-docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15/g" src/chainparams.cpp
+docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.4/consensus.nPowTargetTimespan = 15000 * 24/g" src/chainparams.cpp
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob namecoin-cli stop
 docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
