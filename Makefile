@@ -202,7 +202,7 @@ new_mainnet:
 	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	./checkdifficulty_mainnet.sh
+	#./checkdifficulty_mainnet.sh
 
 connect-testnet:
 	#get internal docker ipaddress of alice and let bob connect to alice
