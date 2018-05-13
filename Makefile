@@ -181,7 +181,7 @@ new_mainnet:
 	docker exec doichain_mainnet-alice namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
 
@@ -189,7 +189,7 @@ new_mainnet:
 	docker exec doichain_mainnet-bob namecoin-cli stop
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	#docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
 	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
 
@@ -202,7 +202,7 @@ new_mainnet:
 	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	#./checkdifficulty_mainnet.sh
+	# ./checkdifficulty_mainnet.sh # do not enable this since namecoind does not allow connection - correct rpcallowip first!
 
 connect-testnet:
 	#get internal docker ipaddress of alice and let bob connect to alice
