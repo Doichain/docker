@@ -58,10 +58,10 @@ RUN export tar='bsdtar'
 
 #Install locales
 ENV OS_LOCALE en_US.UTF-8
-ENV LANG $OS_LOCALE
+ENV LANG ${OS_LOCALE}
 ENV LANGUAGE en_US:en
-ENV LC_ALL $OS_LOCALE
-RUN locale-gen $OS_LOCALE
+ENV LC_ALL ${OS_LOCALE}
+RUN locale-gen ${OS_LOCALE}
 
 #Set user
 WORKDIR /
