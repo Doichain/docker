@@ -114,7 +114,7 @@ test_testnet_rm:
 
 test_regtest_rm:
 	docker rm -fv regtest-bob regtest-alice 
-
+	docker volume rm doichain_regtest-bob doichain_regtest-alice 
 clean: 
 	docker rmi -f $(IMG)
 
@@ -148,9 +148,11 @@ name_doi:
 	$(eval ALICE_ADDRESS=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getaddressesbyaccount", "params": [""] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result[0]'))
 	$(info bobs address is:($(BOB_ADDRESS)))
 	$(eval txid_fee=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "sendtoaddress", "params": [$(BOB_ADDRESS),0.02] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
-	$(info sent 0.02 to Bob txid:($(txid_fee)))
-	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "name_doi", "params": ["e/maketest_$(currentTime)","{testparam:testval}",$(BOB_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
-	$(info sent new name_doi to Bob txid:($(txid_doi)))
+	$(info sent 0.02 to Bob txid:($(txid_fee))) #namecoind crashes after receiving two different transactions
+	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "name_new", "params": ["e/maketest_new_$(currentTime)"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
+	$(eval txid_doi=$(shell curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "name_doi", "params": ["e/maketest_doi_$(currentTime)","{testparam:testval}",$(BOB_ADDRESS)] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq '.result' ))
+	
+	#//$(info sent new name_doi to Bob txid: $(txid_doi))
 	sleep 3
 	
 	#check if transaction already arrived at bobs
@@ -162,9 +164,9 @@ name_doi:
 
 
 	#get internal docker ipaddress of alice and let bob connect to alice
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
-	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
-	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
+	#$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
+	#@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
+	#curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
 new_mainnet:
 	$(eval RPC_PORT_ALICE=8339)	
@@ -271,7 +273,7 @@ test_regtest:
 	
 	#test simple name-doi and send it to another addresss
 	@$(MAKE) -j 1 -e -f $(THIS_FILE) name_doi
-
+	
 	##dApp tests
 	#curl to alice dapp and autenticate, get userId and token
 	#curl to alice dapp and add new opt-in
