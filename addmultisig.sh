@@ -31,18 +31,9 @@ BOB_PUBKEY=$(docker exec regtest-bob namecoin-cli -regtest validateaddress $BOB_
 echo "alice-pubkey: "$ALICE_PUBKEY 
 echo "bob-pubkey: "$BOB_PUBKEY
 
-MULTISIG_VAL=$(docker exec regtest-alice namecoin-cli -regtest createmultisig 2 [$ALICE_PUBKEY,$BOB_PUBKEY])
-MULTISIG_VAL2=$(docker exec regtest-bob namecoin-cli -regtest createmultisig 2 [$ALICE_PUBKEY,$BOB_PUBKEY])
-
-MULTISIG_ADDR=$(echo $MULTISIG_VAL | jq '.address' | tr -d \")
-MULTISIG_REEDEEM=$(echo $MULTISIG_VAL | jq '.redeemScript')
-echo "multisig-addr: "$MULTISIG_ADDR
-echo "multisig-reedeem: "$MULTISIG_REEDEEM
-
-MULTISIG_ADDR2=$(echo $MULTISIG_VAL2 | jq '.address' | tr -d \")
-MULTISIG_REEDEEM2=$(echo $MULTISIG_VAL2 | jq '.redeemScript')
-echo "multisig-addr2: "$MULTISIG_ADDR2
-echo "multisig-reedeem2: "$MULTISIG_REEDEEM2
+MULTISIG_ADDR=$(docker exec regtest-alice namecoin-cli -regtest addmultisigaddress 2 '['$ALICE_PUBKEY','$BOB_PUBKEY']')
+MULTISIG_ADDR2=$(docker exec regtest-bob namecoin-cli -regtest addmultisigaddress 2 '['$ALICE_PUBKEY','$BOB_PUBKEY']')
+echo  $MULTISIG_VAL
 
 unixtime=$(date +%s%N)
 name_address='e/name_'$unixtime
@@ -75,37 +66,32 @@ echo "nameAmount: "$nameAmount
 echo "changeAmount: "$changeAmount
 
 
-inputs='[{"txid":"'$txid'","vout":'$vout_id'}]' #, '$feeInputAmount'
+inputs='[{"txid":"'$txid'","vout":'$vout_id'}, '$feeInput']' #, '$feeInputAmount'
 echo "inputs: "$inputs
-outputs='{"'$changeAddr'": '$changeAmount', "'$EMAIL_RECIPIENT_ADDR'": '$nameAmount'}'
-outputs_with_name='[outputs, {"'$name_address'": $nameAmount}]' #we should use this later?! see: https://github.com/namecoin/namecoin-core/pull/185
-echo "outputs: "$outputs
-
+outputs='{"'$changeAddr'": 0'$changeAmount', "'$EMAIL_RECIPIENT_ADDR'": '$nameAmount'}'
+outputs_with_name='['$outputs', {"'$EMAIL_RECIPIENT_ADDR'":'$nameAmount'}]' #we should use this later?! see: https://github.com/namecoin/namecoin-core/pull/185
+echo "outputs: "$outputs_with_name
+#'{"'$changeAddr'": 0'$changeAmount', "'$BOB_ADDR'": '$nameAmount'}'
 #txRaw=$(curl --user $myrpcusername:$myrpcpassword --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "createrawtransaction", "params": [$inputs, $outputs] }' -H 'content-type: text/plain;' http://$myip:18339/)
-txRaw=$(docker exec regtest-alice namecoin-cli -regtest createrawtransaction '[{"txid":"'$txid'","vout":'$vout_id'}]' '{"'$changeAddr'": 0'$changeAmount', "'$BOB_ADDR'": '$nameAmount'}')
+txRaw=$(docker exec regtest-alice namecoin-cli -regtest createrawtransaction '[{"txid":"'$txid'","vout":'$vout_id'}]' '['$outputs', {"'$EMAIL_RECIPIENT_ADDR'":'$nameAmount'}]')
 echo "txRaw: "$txRaw
+
 
 #op='{"op": "name_doi", "name": "'$name_address'", "value": "it worked"}'
 #echo "op: "$op
+#echo $(docker exec regtest-alice namecoin-cli -regtest decoderawtransaction $txRaw) | jq 
 nameInd=$(docker exec regtest-alice namecoin-cli -regtest decoderawtransaction $txRaw | jq '.vout[] | select(.scriptPubKey.addresses[] | test("'$BOB_ADDR'")) | {nameId:.n}' | jq '.nameId')
 echo "nameInd: "$nameInd
 
 
-hex=$(docker exec regtest-alice namecoin-cli -regtest namerawtransaction $txRaw $nameInd '{"op": "name_update", "name": "'$name_address'", "value": "it worked"}' | jq '.hex')
+hex=$(docker exec regtest-alice namecoin-cli -regtest namerawtransaction $txRaw $nameInd '{"op": "name_doi", "name": "'$name_address'", "value": "it worked"}')
 #hex=$(docker exec regtest-alice namecoin-cli -regtest namerawtransaction $txRaw $nameInd '{"op": "name_doi", "name": "'$name_address'", "value": "it worked"}' | jq '.hex')
 echo "hex: "$hex
 privKeyAlex=$(docker exec regtest-alice namecoin-cli -regtest dumpprivkey $ALICE_ADDR)
 echo "privKey: "$privKeyAlex
 
-txdecode=$(docker exec regtest-alice namecoin-cli -regtest decoderawtransaction $txRaw)
+txdecode=$(docker exec regtest-alice namecoin-cli -regtest decoderawtransaction "'$hex'")
 echo $txdecode | jq
-
-#i am not sure about vout:0  and I am not sure about txRaw (could be hex too!)
-hex=$(docker exec regtest-alice namecoin-cli -regtest signrawtransaction $txRaw '[{"txid":"'$txid'","vout":0,"scriptPubKey":'$vout_hex',"redeemScript":'$MULTISIG_REEDEEM'}]' '["'$privKeyAlex'"]')
-echo $hex | jq 
-hex=$(echo $hex | jq '.hex') 
-
-privKeyBob=$(docker exec regtest-bob namecoin-cli -regtest dumpprivkey $BOB_ADDR)
-hex=$(docker exec regtest-bob namecoin-cli -regtest signrawtransaction $txRaw '[{"txid":"'$txid'","vout":0,"scriptPubKey":'$vout_hex',"redeemScript":'$MULTISIG_REEDEEM'}]' '["'$privKeyBob'"]')
-echo $hex | jq 
-hex=$(echo $hex | jq '.hex')  
+#"'$rawtx'"
+partial=$(docker exec regtest-alice namecoin-cli -regtest signrawtransaction "'$hex'")
+echo $partial | jq

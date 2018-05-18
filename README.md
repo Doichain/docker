@@ -1,6 +1,19 @@
 # doichain/docker
 ## a docker image for the Doichain environment http://www.doichain.org
 
+### Who needs this docker container?
+1. Web Project owners 
+  - I want run a node and a dApp in order to request "Double-Opt-In" email permissions from my user
+2. Mail Server provider / Sysadmins
+  - we want to be part of the project and allow our users to confirm their email permissions directly over our mail host without any third party
+3. Investors
+  - run my own node in order to simply send/receive Doi (Doichain coins)
+3. Developers
+  - run a testnet node ``make testnet-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339`` 
+  - run a testnet network with alice and bob ``make test_testnet``
+  - run a regtest node run ``make regtest-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339``
+  - run a regtest network wiht aliceand bob ```maek test_regtest``
+
 ### How to use this docker container?
 1. if you want to register one or more "double-opt-in" for your customer email adresses install a SEND_DAPP
 2. if you want to protect your email server from unwanted spam install CONFIRM_DAPP and VERIFY_APP (experimental)
@@ -61,3 +74,14 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 
 ### Installation Verify - dApp
 2. ``docker run --name=doichain-<your-host> --hostname=doichain-<your-host> -it --rm -e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER='admin' -e RPC_PASSWORD='<rpc-password>' -e RPC_HOST=localhost -e DAPP_HOST=<dAppHostFromTheInternet:Port> -e DAPP_SMTP_HOST=<smtp-host> -e DAPP_SMTP_USER=<smtp-username> -e DAPP_SMTP_PASS=<smtp-password> -e DAPP_SMTP_PORT=25 -p 3000:3000 -p 8338:8338 -v doichain.org:/home/doichain/data  doichain/dapp:latest``
+
+
+### Pitfalls and possible errors
+1. Authentication of dApp (REST-API) needs correct auth token and user id. Get it and correct authentication!
+2. Doi gets successful accepted by REST interface and appears in the dapps web frontend but nothing else happens. (connect to the docker container and check for errors)
+2.2 no coins in the wallet - get some fund and send to an address of your dApp in send mode
+2.3 configure mail account (mail server, username, password) server for confirm dapp
+3. confirmation link shows localhost and not correct url of dapp (e.g. http://dapp.doichain.org)
+4. DOI-Request Email doesn't loook beatiful or should look differently. Please change template and data in server/api/rest/imports/debug.js
+5. DOI-Request Email has wrong sender email address. Please change template and data in server/api/rest/imports/debug.js
+6. Confirmation email is not send out. Enable type 'confirm' (and maybe 'verify') in /home/doichain/data/dapp/settings.json
