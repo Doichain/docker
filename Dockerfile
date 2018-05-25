@@ -34,6 +34,7 @@ ENV RPC_USER ""
 #Install dependencies
 RUN apt-get update && apt-get install -y \
 	autoconf \
+	apt-utils \
 	bsdmainutils \
 	build-essential \
 	curl \
@@ -62,7 +63,7 @@ RUN locale-gen ${OS_LOCALE}
 ENV OS_LOCALE en_US.UTF-8
 ENV LANG ${OS_LOCALE}
 ENV LANGUAGE en_US:en
-ENV LC_ALL ${OS_LOCALE}
+#ENV LC_ALL ${OS_LOCALE}
 
 #Set user
 WORKDIR /
