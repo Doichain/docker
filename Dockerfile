@@ -115,15 +115,8 @@ RUN sudo dos2unix \
 	sudo chmod +x \
 	entrypoint.sh \
 	start.sh \
-	namecoin-start.sh && \
-	transaction.sh \
-	getblocktimes.sh \
-	dapp-start.sh && \
-	sudo chmod +x \
-	entrypoint.sh \
-	start.sh \
 	namecoin-start.sh \
-        transaction.sh \
+    transaction.sh \
 	getblocktimes.sh \
 	dapp-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
