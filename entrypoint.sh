@@ -8,8 +8,6 @@ if [ $REGTEST = true ]; then
   _NODE_PORT=$NODE_PORT_REGTEST
 fi
 
-<<<<<<< HEAD
-=======
 if [ $TESTNET = true ]; then
 	_RPC_PORT=$RPC_PORT_TESTNET
   	_NODE_PORT=$NODE_PORT_TESTNET
@@ -26,15 +24,11 @@ if [ -z "$RPC_PASSWORD" ]; then
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 
->>>>>>> 0.0.4
 echo "daemon=1
 rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
-<<<<<<< HEAD
-port=${_NODE_PORT}" > data/namecoin/namecoin.conf
-=======
 walletnotify=/home/doichain/data/namecoin/transaction.sh %s ${DAPP_PORT}
 port=${_NODE_PORT}" > data/namecoin/namecoin.conf
 
@@ -121,6 +115,5 @@ if [ $DAPP_VERIFY = true ]; then
 fi
 DAPP_SETTINGS=$DAPP_SETTINGS'}'
 echo $DAPP_SETTINGS > data/dapp/settings.json
->>>>>>> 0.0.4
 
 exec "$@"

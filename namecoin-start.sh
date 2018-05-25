@@ -1,11 +1,5 @@
 _REGTEST=''
 if [ $REGTEST = true ]; then
-<<<<<<< HEAD
-	_REGTEST='-regtest'
-fi
-
-namecoind $_REGTEST -addnode=$CONNECTION_NODE
-=======
 	_REGTEST='-regtest -addnode='$CONNECTION_NODE
 fi
 
@@ -15,4 +9,4 @@ if [ $TESTNET = true ]; then
 fi
 
 namecoind $_REGTEST $_TESTNET
->>>>>>> 0.0.4
+
