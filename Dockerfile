@@ -120,7 +120,7 @@ RUN sudo dos2unix \
 	namecoin-start.sh \
     transaction.sh \
 	getblocktimes.sh \
-	sudo apt-get purge -y dos2unix && \
+	sudo apt-get purge dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
 
 #Create data dir
