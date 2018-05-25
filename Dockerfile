@@ -108,6 +108,8 @@ COPY start.sh start.sh
 COPY getblocktimes.sh getblocktimes.sh 
 COPY transaction.sh transaction.sh
 COPY namecoin-start.sh namecoin-start.sh
+COPY dapp-start.sh dapp-start.sh
+
 RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
