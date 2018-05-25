@@ -10,6 +10,7 @@ ifndef PORT
 	PORT=8338
 endif
 
+IMG=inspiraluna/doichain:0.0.4
 DOICHAIN_VER=0.0.4
 DOICHAIN_DAPP_VER=0.0.4
 
@@ -38,7 +39,6 @@ HTTPPORT_EXISTS:=$(shell sudo lsof -i:$(HTTP_PORT) | grep LISTEN) #cannot recogn
 RPCPORT_EXISTS:=$(shell sudo lsof -i:$(RPC_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 P2PPORT_EXISTS:=$(shell sudo lsof -i:$(PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 
-IMG=inspiraluna/doichain:0.0.4
 RUN_SHELL=bash
 
 default: check help

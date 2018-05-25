@@ -71,7 +71,7 @@ echo "feeInputAmount: "$feeInputAmount
 
 changeAddr=$(sudo docker exec regtest-alice namecoin-cli -regtest getnewaddress) #address where to send change (my own)
 changeAmount=$(echo "$feeInputAmount - $amount" | bc)
-#, "'$changeAddr'": '$changeAmount'
+#	, "'$changeAddr'": '$changeAmount'
 txRaw=$(docker exec regtest-alice namecoin-cli -regtest createrawtransaction '[{"txid":"'$txid'","vout":'$vout_id'}]' '{"'$EMAIL_RECIPIENT_ADDR'": '$transferAmount'}') 
 echo "txRaw: "$txRaw
 txDecode=$(docker exec regtest-alice namecoin-cli -regtest decoderawtransaction $txRaw)
@@ -79,7 +79,7 @@ echo $txDecode | jq
 
 privKeyAlex=$(docker exec regtest-alice namecoin-cli -regtest dumpprivkey $ALICE_ADDR)
 echo "privKeyAlex: "$privKeyAlex
-
+exit;
 hex=$(docker exec regtest-alice namecoin-cli -regtest signrawtransaction $txRaw '[{"txid":"'$txid'","vout":'$vout_id',"scriptPubKey":'$vout_hex',"redeemScript":'$MULTISIG_REEDEEM'}]' '["'$privKeyAlex'"]')
 echo $hex | jq 
 hex=$(echo $hex | jq '.hex') 
