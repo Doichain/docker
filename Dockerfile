@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y \
 	bsdtar \
 	dos2unix \
 	git \
+	locale \
 	libboost-all-dev \
 	libevent-dev \
 	libssl-dev \
