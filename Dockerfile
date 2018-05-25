@@ -119,7 +119,7 @@ RUN sudo dos2unix \
 	start.sh \
 	namecoin-start.sh \
     transaction.sh \
-	getblocktimes.sh \
+	getblocktimes.sh && \
 	sudo apt-get purge dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
 
