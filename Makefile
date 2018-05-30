@@ -91,14 +91,19 @@ build:
 	sudo docker build --no-cache -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
 	
 mainnet%: http_port rpc_port p2pport
+	$(info Checking if HTTP_PORT, RPC_PORT and PORT is set)
+	@printf 'HTTP_PORT is $(if $(HTTP_PORT),true,$(eval HTTP_PORT=80) ${HTTP_PORT}). HTTP_PORT is ${HTTP_PORT} \n'
+	@printf 'RPC_PORT is $(if $(RPC_PORT),true,$(eval RPC_PORT=8339) ${RPC_PORT}). RPC_PORT is ${RPC_PORT} \n'
+	@printf 'PORT is $(if $(PORT),true,$(eval PORT=8338) ${PORT}). RPC_PORT is ${PORT} \n'
 	$(DOCKER_MAINNET) -i $(IMG)
 
 testnet%: http_port rpc_port p2pport
-	$(info Checking if RPC_PORT and port is set)
-	@printf 'HTTP_PORT is $(if $(HTTP_PORT),true,$(eval HTTP_PORT=18339) ${HTTP_PORT}). HTTP_PORT is ${HTTP_PORT} \n'
+	$(info Checking if HTTP_PORT, RPC_PORT and PORT is set)
+	@printf 'HTTP_PORT is $(if $(HTTP_PORT),true,$(eval HTTP_PORT=81) ${HTTP_PORT}). HTTP_PORT is ${HTTP_PORT} \n'
 	@printf 'RPC_PORT is $(if $(RPC_PORT),true,$(eval RPC_PORT=18339) ${RPC_PORT}). RPC_PORT is ${RPC_PORT} \n'
 	@printf 'PORT is $(if $(PORT),true,$(eval PORT=18338) ${PORT}). RPC_PORT is ${PORT} \n'
 	$(DOCKER_TESTNET) -i $(IMG) 
+	sudo docker attach 
 
 regtest%: http_port rpc_port p2pport
 	$(info -$(RUNNING_TARGET)-) 
