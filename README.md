@@ -1,7 +1,6 @@
 # doichain/docker
 ## a docker image for the Doichain environment http://www.doichain.org
 
-<<<<<<< Updated upstream
 ### Who needs this docker container?
 1. Web Project owners 
   - I want run a node and a dApp in order to request "Double-Opt-In" email permissions from my user
@@ -10,19 +9,19 @@
 3. Investors
   - run my own node in order to simply send/receive Doi (Doichain coins)
 3. Developers
+  - ``git clone https://github.com/Doichain/docker.git doichain-docker; cd doichain-docker``
   - run a testnet node ``make testnet-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339`` 
   - run a testnet network with alice and bob ``make test_testnet``
   - run a regtest node run ``make regtest-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339``
   - run a regtest network wiht aliceand bob ```maek test_regtest``
+  - run ``docker attach testnet-[my-doichain]`` in order to connect to your docker container
+  - run inside the docker container: ``tail -f /home/doichain/.doichain/testnet/debug.log`` in order to watch blockchain download
+  - run ``doichain-cli getnewaddress`` and send your testnet address to testnet@doichain.org with subject "send me money"
 
-### How to use this docker container?
-1. if you want to register one or more "double-opt-in" for your customer email adresses install a SEND_DAPP
-2. if you want to protect your email server from unwanted spam install CONFIRM_DAPP and VERIFY_APP (experimental)
-=======
+  
 ### When to use this docker container?
 1. If you want to register one or more "double-opt-in" for your customer email adresses install a SEND_DAPP
 2. If you want to protect your email server from unwanted spam install CONFIRM_DAPP and VERIFY_APP (experimental)
->>>>>>> Stashed changes
 
 ### Build from doichain/docker GitHub repository 
 1. Checkout this repository with: ``git clone https://github.com/Doichain/docker.git docker-doichain``
