@@ -3,7 +3,6 @@
 # Nico Krause (nico@le-space.de)
 # This bash script prints out the difficulty and its block times of the last 50 blocks
 #
-<<<<<<< Updated upstream
 LASTBLOCK=$1
 DISPLAY=100
 BACK=0
@@ -11,13 +10,10 @@ FORWARD=$DISPLAY
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"
-    LASTBLOCK=$(namecoin-cli getchaintips | jq '.[0].height' | sed 's/\"//g')
+    LASTBLOCK=$(doichain-cli getchaintips | jq '.[0].height' | sed 's/\"//g')
     BACK=$DISPLAY
     FORWARD=0
 fi
-=======
-LASTBLOCK=$(doichain-cli getchaintips | jq '.[0].height' | sed 's/\"//g')
->>>>>>> Stashed changes
 echo "lastblock:"$LASTBLOCK
 LAST_TIME=0
 for ((z=$LASTBLOCK-BACK;z<=$LASTBLOCK+FORWARD;z++))
