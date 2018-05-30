@@ -85,11 +85,11 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 	sudo ln -s /usr/include/db4.8/include/* /usr/include &&\
 	sudo ln -s /usr/include/db4.8/lib/* /usr/lib
 
-#Install namecoin-core
+#Install doichain-core
 WORKDIR /home/doichain
-RUN mkdir .namecoin && \
-	sudo git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git namecoin-core && \
-	cd namecoin-core && \
+RUN mkdir .doichain && \
+	sudo git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
+	cd doichain-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" && \
 	sudo make && \
@@ -108,19 +108,17 @@ COPY entrypoint.sh entrypoint.sh
 COPY start.sh start.sh
 COPY getblocktimes.sh getblocktimes.sh 
 COPY transaction.sh transaction.sh
-COPY namecoin-start.sh namecoin-start.sh
+COPY doichain-start.sh doichain-start.sh
 COPY dapp-start.sh dapp-start.sh
+
 RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
-	namecoin-start.sh \
-	transaction.sh \
-	getblocktimes.sh \
-	dapp-start.sh && \
+	doichain-start.sh && \
 	sudo chmod +x \
 	entrypoint.sh \
 	start.sh \
-	namecoin-start.sh \
+	doichain-start.sh \
     transaction.sh \
 	getblocktimes.sh \
 	dapp-start.sh && \
@@ -131,20 +129,20 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-	mkdir namecoin &&\
+	mkdir doichain &&\
 	mkdir -p \
 	dapp/local && \
 	sudo rm -rf \
-	/home/doichain/.namecoin \
+	/home/doichain/.doichain \
 	/home/doichain/dapp/.meteor/local && \
-	sudo ln -s /home/doichain/data/namecoin /home/doichain/.namecoin && \
+	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain && \
 	sudo ln -s /home/doichain/data/dapp/local /home/doichain/dapp/.meteor
 
 #Run entrypoint
 WORKDIR /home/doichain
 ENTRYPOINT ["scripts/entrypoint.sh"]
 
-#Start namecoin and meteor
+#Start doichain and meteor
 CMD ["scripts/start.sh"]
 
 #Expose ports

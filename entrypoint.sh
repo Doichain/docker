@@ -29,8 +29,8 @@ rpcuser=${RPC_USER}
 rpcpassword=${RPC_PASSWORD}
 rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
-walletnotify=/home/doichain/data/namecoin/transaction.sh %s ${DAPP_PORT}
-port=${_NODE_PORT}" > data/namecoin/namecoin.conf
+walletnotify=/home/doichain/data/doichain/transaction.sh %s ${DAPP_PORT}
+port=${_NODE_PORT}" > data/doichain/doichain.conf
 
 if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false ]; then
 	echo "No dApp type is enabled. Please use at least one dApp type or use node-only container instead! (ENV DAPP_SEND, DAPP_CONFIRM, DAPP_VERIFY)"
@@ -68,7 +68,7 @@ DAPP_SETTINGS=$DAPP_SETTINGS']
 if [ $DAPP_SEND = true ]; then
   DAPP_SETTINGS=$DAPP_SETTINGS'"send": {
 		"doiMailFetchUrl": "'$DAPP_DOI_URL'",
-		"namecoin": {
+		"doichain": {
 	    "host": "localhost",
 	    "port": "'$_RPC_PORT'",
 	    "username": "'$RPC_USER'",
@@ -85,7 +85,7 @@ if [ $DAPP_CONFIRM = true ]; then
 		exit 1
 	fi
   DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
-		"namecoin": {
+		"doichain": {
 		  "host": "localhost",
 		  "port": "'$_RPC_PORT'",
 		  "username": "'$RPC_USER'",
@@ -105,7 +105,7 @@ if [ $DAPP_CONFIRM = true ]; then
 fi
 if [ $DAPP_VERIFY = true ]; then
   DAPP_SETTINGS=$DAPP_SETTINGS'"verify": {
-		"namecoin": {
+		"doichain": {
 	    "host": "localhost",
 	    "port": "'$_RPC_PORT'",
 	    "username": "'$RPC_USER'",
