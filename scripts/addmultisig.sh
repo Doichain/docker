@@ -48,7 +48,7 @@ curl -s --user $myrpcusername:$myrpcpassword --data-binary '{"jsonrpc": "1.0", "
 ## - https://programminghistorian.org/lessons/json-and-jq
 ## - http://blog.librato.com/posts/jq-json
 
-rawtx=$(docker exec regtest-alice namecoin-cli -regtest getrawtransaction $txid 1 | jq '.vout[] | select(.scriptPubKey.nameOp)')
+rawtx=$(docker exec regtest-alice doichain-cli -regtest getrawtransaction $txid 1 | jq '.vout[] | select(.scriptPubKey.nameOp)')
 echo "rawtx: "$rawtx   
 vout_hex=$(echo $rawtx | jq '.scriptPubKey.hex')
 vout_id=$(echo $rawtx | jq '.n')

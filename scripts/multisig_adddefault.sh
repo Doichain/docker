@@ -31,10 +31,12 @@ BOB_PUBKEY=$(docker exec regtest-bob doichain-cli -regtest validateaddress $BOB_
 echo "alice-pubkey: "$ALICE_PUBKEY 
 echo "bob-pubkey: "$BOB_PUBKEY
 
+#MULTISIG_ADDR=$(docker exec regtest-alice doichain-cli -regtest addmultisigaddress 2 '['$ALICE_PUBKEY','$BOB_PUBKEY']')
+#MULTISIG_ADDR2=$(docker exec regtest-bob doichain-cli -regtest addmultisigaddress 2 '['$ALICE_PUBKEY','$BOB_PUBKEY']')
 MULTISIG_VAL=$(docker exec regtest-alice doichain-cli -regtest createmultisig 2 [$ALICE_PUBKEY,$BOB_PUBKEY])
+echo  $MULTISIG_VAL
 MULTISIG_ADDR=$(echo $MULTISIG_VAL | jq '.address' | tr -d \")
 MULTISIG_REEDEEM=$(echo $MULTISIG_VAL | jq '.redeemScript')
-echo  $MULTISIG_VAL | jq
 echo "multisig-addr: "$MULTISIG_ADDR
 echo "multisig-reedeem: "$MULTISIG_REEDEEM
 
@@ -44,6 +46,9 @@ unixtime=$(date +%s%N)
 txid=$(docker exec regtest-alice doichain-cli -regtest sendtoaddress $MULTISIG_ADDR $amount "multisig test" "bob")
 echo "txid: "$txid   
 
+#generated=$(docker exec regtest-alice doichain-cli -regtest generatetoaddress 10 $ALICE_ADDR)
+#echo $generated |jq
+
 rawtx=$(docker exec regtest-alice doichain-cli -regtest getrawtransaction $txid 1 | jq '.vout[] | select(.value=='$amount')')
 echo "rawtx: "$rawtx   
 vout_hex=$(echo $rawtx | jq '.scriptPubKey.hex')  
@@ -51,10 +56,25 @@ vout_id=$(echo $rawtx | jq '.n')
 echo $vout_hex
 echo $vout_id
 
+#generated=$(docker exec regtest-alice doichain-cli -regtest generatetoaddress 10 $ALICE_ADDR)
+#echo $generated |jq
+#feeInput=$(docker exec regtest-alice doichain-cli -regtest listunspent | jq '.[0]')
+#echo "feeInput: "$feeInput
+#feeInputTxid=$(echo $feeInput | jq '.txid')
+#feeInputVout=$(echo $feeInput | jq '.vout')
+#feeInputAmount=$(echo $feeInput | jq '.amount')
 changeAddr=$(sudo docker exec regtest-alice doichain-cli -regtest getnewaddress) #address where to send change (my own)
+#changeAmount=$(echo "$feeInputAmount - $nameAmount" | bc)
+#fee=0.005
+#changeAmount=$(python3<<<"print($feeInputAmount-$transferAmount-$fee)")
+#echo "feeInputAmount: "$feeInputAmount
+#echo "nameAmount: "$nameAmount
+#echo "changeAmount: "$changeAmount
 
 inputs='[{"txid":"'$txid'","vout":'$vout_id'}]' #, , '$feeInput''$feeInputAmount'
 echo "inputs: "$inputs
+#outputs='{"'$changeAddr'":'$changeAmount'}'
+#, "'$EMAIL_RECIPIENT_ADDR'": '$transferAmount'
 outputs='{"'$changeAddr'":'$transferAmount'}'
 
 #outputs_with_name='['$outputs', {"'$EMAIL_RECIPIENT_ADDR'":'$nameAmount'}]' #we should use this later?! see: https://github.com/namecoin/namecoin-core/pull/185
