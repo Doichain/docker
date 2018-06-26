@@ -24,7 +24,7 @@ if [ -z "$RPC_PASSWORD" ]; then
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 
-DOICHAIN_CONF_FILE=data/doichain/doichain.conf
+DOICHAIN_CONF_FILE="data/doichain/doichain.conf"
 if [ ! -f $DOICHAIN_CONF_FILE ]; then
     echo "DOICHAIN_CONF_FILE not found - generating new!"
 	echo "daemon=1
@@ -37,7 +37,7 @@ if [ ! -f $DOICHAIN_CONF_FILE ]; then
 fi
 
 
-DAPP_SETTINGS_FILE=data/dapp/settings.json
+DAPP_SETTINGS_FILE="data/dapp/settings.json"
 if [ ! -f $DOICHAIN_CONF_FILE ]; then
 
 	if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false ]; then
