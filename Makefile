@@ -26,7 +26,7 @@ PORT_BOB=28338
 
 
 RPC_USER=admin
-RPC_PASSWORD=generated-password
+RPC_PASSWORD=
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 

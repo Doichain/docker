@@ -13,32 +13,33 @@ if [ $TESTNET = true ]; then
   	_NODE_PORT=$NODE_PORT_TESTNET
 fi
 
-if [ -z "$RPC_USER" ]; then
+if [ -z ${RPC_USER} ]; then
 	RPC_USER='admin'
 	echo "RPC_USER was not set, using "$RPC_USER
 fi
 
-if [ -z "$RPC_PASSWORD" ]; then
+if [ -z ${RPC_PASSWORD} ]; then
 	#echo "generating password"
 	RPC_PASSWORD=$(xxd -l 30 -p /dev/urandom)
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 
-DOICHAIN_CONF_FILE="data/doichain/doichain.conf"
-if [ ! -f $DOICHAIN_CONF_FILE ]; then
+DOICHAIN_CONF_FILE=/home/doichain/data/doichain/doichain.conf
+if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
     echo "DOICHAIN_CONF_FILE not found - generating new!"
-	echo "daemon=1
+	echo "
+	daemon=1
 	rpcuser=${RPC_USER}
 	rpcpassword=${RPC_PASSWORD}
 	rpcallowip=${RPC_ALLOW_IP}
 	rpcport=${_RPC_PORT}
-	walletnotify=/home/doichain/scripts/transaction.sh %s ${DAPP_PORT}
+	walletnotify=/home/doichain/scripts/transaction.sh %s
 	port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 
 
-DAPP_SETTINGS_FILE="data/dapp/settings.json"
-if [ ! -f $DOICHAIN_CONF_FILE ]; then
+DAPP_SETTINGS_FILE=/home/doichain/data/dapp/settings.json
+if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 
 	if [ $DAPP_SEND = false ] && [ $DAPP_CONFIRM = false ] && [ $DAPP_VERIFY = false ]; then
 		echo "No dApp type is enabled. Please use at least one dApp type or use node-only container instead! (ENV DAPP_SEND, DAPP_CONFIRM, DAPP_VERIFY)"
