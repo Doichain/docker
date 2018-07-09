@@ -33,7 +33,7 @@ if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
 	rpcpassword=${RPC_PASSWORD}
 	rpcallowip=${RPC_ALLOW_IP}
 	rpcport=${_RPC_PORT}
-	walletnotify=/home/doichain/scripts/transaction.sh %s
+	walletnotify=curl -X GET http://localhost:3000/api/v1/walletnotify?tx=%s
 	port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 
