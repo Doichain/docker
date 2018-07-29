@@ -5,12 +5,11 @@ ARG DOICHAIN_DAPP_VER=master
 ENV DOICHAIN_VER $DOICHAIN_VER
 ENV DOICHAIN_DAPP_VER $DOICHAIN_DAPP_VER
 
-
+#Setup run vars
 ENV CONFIRM_ADDRESS ""
 ENV CONNECTION_NODE 5.9.154.226
-ENV NODE_PORT 8338
-ENV DAPP_CONFIRM false
-ENV DAPP_DEBUG false
+ENV DAPP_CONFIRM true
+ENV DAPP_DEBUG true
 ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
 ENV DAPP_PORT 3000
 ENV DAPP_HOST "localhost"
@@ -19,7 +18,7 @@ ENV DAPP_SMTP_USER ""
 ENV DAPP_SMTP_HOST ""
 ENV DAPP_SMTP_PASS ""
 ENV DAPP_SMTP_PORT 587
-ENV DAPP_VERIFY false
+ENV DAPP_VERIFY true
 ENV NODE_PORT 8338
 ENV NODE_PORT_TESTNET 18338
 ENV NODE_PORT_REGTEST 18445
@@ -35,6 +34,7 @@ ENV RPC_USER admin
 #Install dependencies
 RUN apt-get update && apt-get install -y \
 	autoconf \
+	apt-utils \
 	bsdmainutils \
 	build-essential \
 	curl \
@@ -45,11 +45,11 @@ RUN apt-get update && apt-get install -y \
 	bsdtar \
 	dos2unix \
 	git \
-	locales \
 	libboost-all-dev \
 	libevent-dev \
 	libssl-dev \
 	libtool \
+	locales \
 	pkg-config \
 	sudo \
 	&& rm -rf /var/lib/apt/lists/*
@@ -58,11 +58,12 @@ RUN export tar='bsdtar'
 
 
 #Install locales
+RUN locale-gen ${OS_LOCALE}
+
 ENV OS_LOCALE en_US.UTF-8
 ENV LANG ${OS_LOCALE}
 ENV LANGUAGE en_US:en
-ENV LC_ALL ${OS_LOCALE}
-RUN locale-gen ${OS_LOCALE}
+#ENV LC_ALL ${OS_LOCALE}
 
 #Set user
 WORKDIR /
@@ -109,7 +110,6 @@ COPY getblocktimes.sh getblocktimes.sh
 COPY transaction.sh transaction.sh
 COPY doichain-start.sh doichain-start.sh
 
-
 RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
@@ -144,4 +144,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE $NODE_PORT $NODE_PORT_REGTEST $RPC_PORT $RPC_PORT_REGTEST
+EXPOSE $DAPP_PORT $NODE_PORT $RPC_PORT
