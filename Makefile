@@ -178,23 +178,23 @@ new_mainnet:
 	sleep 3
 	
 	#connect to alice switch branch to disabled-validation
-	docker exec doichain_mainnet-alice namecoin-cli stop
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-alice sudo make install
+	docker exec doichain_mainnet-alice doichain-cli stop
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-alice sudo make
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-alice sudo make install
 
 	#now also connect to bob and do the same there
-	docker exec doichain_mainnet-bob namecoin-cli stop
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make
-	docker exec -w /home/doichain/namecoin-core doichain_mainnet-bob sudo make install
+	docker exec doichain_mainnet-bob doichain-cli stop
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-bob sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]0.5/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-bob sudo make
+	docker exec -w /home/doichain/doichain-core doichain_mainnet-bob sudo make install
 
-	docker exec doichain_mainnet-alice namecoind -reindex -rpcworkqueue=4096 -server
-	docker exec doichain_mainnet-bob namecoind -reindex -server 
+	docker exec doichain_mainnet-alice doichaind -reindex -rpcworkqueue=4096 -server
+	docker exec doichain_mainnet-bob doichaind -reindex -server
 
 	#now connect bob to alice!
 	sleep 3
@@ -202,7 +202,7 @@ new_mainnet:
 	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
-	# ./checkdifficulty_mainnet.sh # do not enable this since namecoind does not allow connection - correct rpcallowip first!
+	# ./checkdifficulty_mainnet.sh # do not enable this since doichaind does not allow connection - correct rpcallowip first!
 
 connect-testnet:
 	#get internal docker ipaddress of alice and let bob connect to alice
@@ -219,23 +219,23 @@ new_testnet:
 	sleep 3
 	
 	#connect to alice switch branch to disabled-validation
-	docker exec testnet-alice namecoin-cli stop
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
-	#docker exec -w /home/doichain/namecoin-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make
-	docker exec -w /home/doichain/namecoin-core testnet-alice sudo make install
+	docker exec testnet-alice doichain-cli stop
+	docker exec -w /home/doichain/doichain-core testnet-alice sudo git checkout v0.0.1 -- src/validation.cpp
+	docker exec -w /home/doichain/doichain-core testnet-alice sudo git checkout v0.0.1 -- src/consensus/tx_verify.cpp
+	docker exec -w /home/doichain/doichain-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/doichain-core testnet-alice sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/doichain-core testnet-alice sudo make
+	docker exec -w /home/doichain/doichain-core testnet-alice sudo make install
 
 	#now also connect to bob and do the same there
-	docker exec testnet-bob namecoin-cli stop
-	docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
-	#docker exec -w /home/doichain/namecoin-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
-	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make
-	docker exec -w /home/doichain/namecoin-core testnet-bob sudo make install
+	docker exec testnet-bob doichain-cli stop
+	docker exec -w /home/doichain/doichain-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]2/consensus.nPowTargetTimespan = 1500 * 24/g" src/chainparams.cpp
+	#docker exec -w /home/doichain/doichain-core testnet-bob sudo sed -i.bak -e "s/consensus.nPowTargetTimespan[[:space:]]=[[:space:]]14[[:space:]]\*[[:space:]]24/consensus.nPowTargetTimespan = 0.4/g" src/chainparams.cpp
+	docker exec -w /home/doichain/doichain-core testnet-bob sudo make
+	docker exec -w /home/doichain/doichain-core testnet-bob sudo make install
 
-	docker exec testnet-alice namecoind -testnet -reindex -rpcworkqueue=2048 -server
-	docker exec testnet-bob namecoind -testnet -reindex -server 
+	docker exec testnet-alice doichaind -testnet -reindex -rpcworkqueue=2048 -server
+	docker exec testnet-bob doichaind -testnet -reindex -server
 	sleep 3
 	
 	#now connect bob to alice!

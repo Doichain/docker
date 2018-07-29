@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-scripts/namecoin-start.sh &
+scripts/doichain-start.sh &
 
 exec /bin/bash
