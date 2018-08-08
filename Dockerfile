@@ -144,4 +144,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE $DAPP_PORT $NODE_PORT $RPC_PORT
+EXPOSE $NODE_PORT $RPC_PORT
