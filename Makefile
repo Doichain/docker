@@ -10,7 +10,7 @@
 #	PORT=8338
 #endif
 
-IMG=inspiraluna/doichain:0.0.5
+IMG=doichain/node-only
 DOICHAIN_VER=0.0.5
 DOICHAIN_DAPP_VER=0.0.5
 
