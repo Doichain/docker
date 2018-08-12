@@ -106,8 +106,7 @@ RUN meteor npm install && \
 WORKDIR /home/doichain/scripts/
 COPY entrypoint.sh entrypoint.sh
 COPY start.sh start.sh
-COPY getblocktimes.sh getblocktimes.sh 
-COPY transaction.sh transaction.sh
+COPY getblocktimes.sh getblocktimes.sh
 COPY doichain-start.sh doichain-start.sh
 
 RUN sudo dos2unix \
@@ -118,7 +117,6 @@ RUN sudo dos2unix \
 	entrypoint.sh \
 	start.sh \
 	doichain-start.sh \
-    transaction.sh \
 	getblocktimes.sh && \
 	sudo apt-get purge -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
