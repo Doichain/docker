@@ -29,11 +29,13 @@ if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
     echo "DOICHAIN_CONF_FILE not found - generating new!"
 	echo "
 	daemon=1
+	server=1
 	rpcuser=${RPC_USER}
 	rpcpassword=${RPC_PASSWORD}
 	rpcallowip=${RPC_ALLOW_IP}
 	rpcport=${_RPC_PORT}
-	walletnotify=/home/doichain/scripts/transaction.sh %s
+	txindex=1
+	walletnotify=curl -X GET http://localhost:3000/api/v1/walletnotify?tx=%s
 	port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 
