@@ -1,25 +1,12 @@
 FROM ubuntu
 
 ARG DOICHAIN_VER=master
-ARG DOICHAIN_DAPP_VER=master
 ENV DOICHAIN_VER $DOICHAIN_VER
-ENV DOICHAIN_DAPP_VER $DOICHAIN_DAPP_VER
 
 #Setup run vars
 ENV CONFIRM_ADDRESS ""
 ENV CONNECTION_NODE 5.9.154.226
-ENV DAPP_CONFIRM true
-ENV DAPP_DEBUG true
 ENV DAPP_URL http://localhost:3000
-ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
-ENV DAPP_PORT 3000
-ENV DAPP_HOST "localhost"
-ENV DAPP_SEND true
-ENV DAPP_SMTP_USER ""
-ENV DAPP_SMTP_HOST ""
-ENV DAPP_SMTP_PASS ""
-ENV DAPP_SMTP_PORT 587
-ENV DAPP_VERIFY true
 ENV NODE_PORT 8338
 ENV NODE_PORT_TESTNET 18338
 ENV NODE_PORT_REGTEST 18445
@@ -121,12 +108,9 @@ RUN mkdir data && \
 	cd data && \
 	mkdir doichain &&\
 	mkdir -p \
-	dapp/local && \
 	sudo rm -rf \
 	/home/doichain/.doichain \
-	/home/doichain/dapp/.meteor/local && \
-	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain && \
-	sudo ln -s /home/doichain/data/dapp/local /home/doichain/dapp/.meteor
+	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain
 
 #Run entrypoint
 WORKDIR /home/doichain
