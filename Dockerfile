@@ -108,8 +108,7 @@ RUN mkdir data && \
 	cd data && \
 	mkdir doichain &&\
 	mkdir -p \
-	sudo rm -rf \
-	/home/doichain/.doichain \
+	sudo rm -rf /home/doichain/.doichain \
 	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain
 
 #Run entrypoint
