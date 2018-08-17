@@ -10,6 +10,7 @@ ENV CONFIRM_ADDRESS ""
 ENV CONNECTION_NODE 5.9.154.226
 ENV DAPP_CONFIRM true
 ENV DAPP_DEBUG true
+ENV DAPP_URL http://localhost:3000
 ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
 ENV DAPP_PORT 3000
 ENV DAPP_HOST "localhost"
@@ -28,7 +29,7 @@ ENV RPC_ALLOW_IP 127.0.0.1
 ENV RPC_PASSWORD ""
 ENV RPC_PORT 8339
 ENV RPC_PORT_TESTNET 18339
-ENV RPC_PORT_REGTEST 18443
+ENV RPC_PORT_REGTEST 18332
 ENV RPC_USER admin
 
 #Install dependencies
@@ -95,13 +96,6 @@ RUN mkdir .doichain && \
 	sudo make && \
 	sudo make install
 
-RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone --branch ${DOICHAIN_DAPP_VER} https://github.com/Doichain/dApp.git /home/doichain/dapp && \
-	sudo chown -R doichain:doichain /home/doichain/dapp
-WORKDIR /home/doichain/dapp/
-RUN meteor npm install && \
-	sudo meteor npm install --save bcrypt
-
 #Copy start scripts
 WORKDIR /home/doichain/scripts/
 COPY entrypoint.sh entrypoint.sh
@@ -142,4 +136,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE $NODE_PORT $RPC_PORT
+EXPOSE $NODE_PORT $RPC_PORT_REGTEST
