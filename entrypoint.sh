@@ -26,7 +26,7 @@ if [ -z ${RPC_PASSWORD} ]; then
 	echo "RPC_PASSWORD was not set, generated: "$RPC_PASSWORD
 fi
 
-if [ $DAPP_URL= true ]; then
+if [ -z ${DAPP_URL} ]; then
 	_DAPP_URL=$DAPP_URL
 fi
 
