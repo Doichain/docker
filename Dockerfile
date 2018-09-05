@@ -8,5 +8,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends bsdtar git curl
     adduser doichain sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN export tar='bsdtar' && sudo curl https://install.meteor.com/ | sh && \
-sudo chown -R doichain:doichain /home/doichain/dapp
+RUN export tar='bsdtar' && sudo curl https://install.meteor.com/ | sh 
