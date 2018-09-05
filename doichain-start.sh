@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 _REGTEST=''
 if [ $REGTEST = true ]; then
 	_REGTEST='-regtest -addnode='$CONNECTION_NODE
