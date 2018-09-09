@@ -1,18 +1,6 @@
-#ifndef HTTP_PORT 
-#	HTTP_PORT=80
-#endif
-#
-#ifndef RPC_PORT 
-#	RPC_PORT=8339
-#endif
-#
-#ifndef PORT 
-#	PORT=8338
-#endif
-
-IMG=inspiraluna/doichain:0.0.5
-DOICHAIN_VER=0.0.5
-DOICHAIN_DAPP_VER=0.0.5
+IMG=doichain/docker
+DOICHAIN_VER=master
+DOICHAIN_DAPP_VER=master
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
