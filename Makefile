@@ -10,9 +10,9 @@
 #	PORT=8338
 #endif
 
-IMG=inspiraluna/doichain:0.0.5
-DOICHAIN_VER=0.0.5
-DOICHAIN_DAPP_VER=0.0.5
+IMG=docker/dapp:0.0.6
+DOICHAIN_VER=0.0.6
+DOICHAIN_DAPP_VER=0.0.6
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
