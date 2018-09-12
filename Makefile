@@ -10,7 +10,7 @@
 #	PORT=8338
 #endif
 
-IMG=docker/dapp:0.0.6
+IMG=doichain/dapp:0.0.6
 DOICHAIN_VER=0.0.6
 DOICHAIN_DAPP_VER=0.0.6
 
