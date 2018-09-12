@@ -1,6 +1,6 @@
-IMG=doichain/docker
-DOICHAIN_VER=master
-DOICHAIN_DAPP_VER=master
+IMG=doichain/dapp:0.0.6
+DOICHAIN_VER=0.0.6
+DOICHAIN_DAPP_VER=0.0.6
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
