@@ -97,10 +97,10 @@ RUN mkdir .doichain && \
 
 RUN sudo curl https://install.meteor.com/ | sh && \
 	sudo git clone --branch ${DOICHAIN_DAPP_VER} https://github.com/Doichain/dApp.git /home/doichain/dapp && \
-	sudo git submodule init && sudo git submodule update && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \
+	sudo git submodule init && sudo git submodule update && \
 	sudo meteor npm install --save bcrypt
 
 #Copy start scripts
