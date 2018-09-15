@@ -108,6 +108,7 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 		      "password": "'$DAPP_SMTP_PASS'",
 		      "server":   "'$DAPP_SMTP_HOST'",
 		      "port": "'$DAPP_SMTP_PORT'",
+		      "NODE_TLS_REJECT_UNAUTHORIZED":"0",
 		      "defaultFrom": "doichain@example-domain.org"
 	    }
 	  }'
