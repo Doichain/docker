@@ -31,12 +31,16 @@ RUN apt-get update && apt-get install -y \
 	automake \
 	pkg-config \
 	bsdmainutils \
-	g++-mingw-w64-i686 mingw-w64-i686-dev \
-	&& update-alternatives --set i686-w64-mingw32-g++ /usr/bin/i686-w64-mingw32-g++-posix \
-	&& rm -rf /var/lib/apt/lists/* \
-
+	g++-mingw-w64-x86-64 \
+#	g++-mingw-w64-i686 mingw-w64-i686-dev \
+	&& update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix \
+#	&& update-alternatives --set i686-w64-mingw32-g++ /usr/bin/i686-w64-mingw32-g++-posix \
+	&& rm -rf /var/lib/apt/lists/*
 
 #Install berkeley-db
+#make HOST=x86_64-apple-darwin11
+
+
 WORKDIR /usr/src
 ADD http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz db-4.8.30.NC.tar.gz
 RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4.8.30.NC.tar.gz' | sudo sha256sum -c && \
@@ -47,17 +51,20 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 	make install && \
 	ln -s /usr/local/BerkeleyDB.4.8 /usr/include/db4.8 && \
 	ln -s /usr/include/db4.8/include/* /usr/include && \
-	ln -s /usr/include/db4.8/lib/* /usr/lib &&\
-	git clone --branch ${DOICHAIN_VER} --depth 1 https://github.com/Doichain/core.git doichain-core && \
-	PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') &&\
-	cd depends &&\
-	make HOST=x86_64-w64-mingw32 &&\
-	cd .. &&\
+	ln -s /usr/include/db4.8/lib/* /usr/lib && \
+	echo "checking out branch: ${DOICHAIN_VER}" && \
+	cd ../../ && \
+	git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
 	cd doichain-core && \
+	PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') && \
+	cd depends && \
+	make HOST=x86_64-w64-mingw32 && \
+	cd .. && \
 	./autogen.sh && \
-	CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
+	CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
+	#CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
 	make  && \
-	find . -name *.exe && \
+	find . -name *.exe
 
 
 

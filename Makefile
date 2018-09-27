@@ -1,33 +1,21 @@
-#ifndef HTTP_PORT 
-#	HTTP_PORT=80
-#endif
-#
-#ifndef RPC_PORT 
-#	RPC_PORT=8339
-#endif
-#
-#ifndef PORT 
-#	PORT=8338
-#endif
+IMG=doichain/crosscompile
+DOICHAIN_VER=0.0.5
 
-IMG=doichain/node-only
+#osx win64 win32 
+OS=osx
 
-DOCKER_RUN=sudo docker run -td --restart always
-private RUNNING_TARGET:=$(shell docker ps -aq -f name=$@)
-
-RUN_SHELL=bash
-
-default: check help
+default: build
 
 check:
 	which jq; which bc
 
 help:
-	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
+	$(info Usage: make build)
 	$(info 		  make clean - removes $(IMG) image and containers)
 
-all: build test
+all: build
 
 build:
-	docker build --no-cache -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg OS=$(OS) .
+	docker build  -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg OS=$(OS) .
+connect: docker run -td $(IMG) bash
 	
