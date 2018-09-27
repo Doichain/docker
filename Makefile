@@ -18,7 +18,7 @@ RPC_PASSWORD=
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
-DOCKER_RUN=sudo docker run -td --restart always
+DOCKER_RUN=docker run -td --restart always
 DOCKER_RUN_DEFAULT_ENV=-e DAPP_DEBUG=true 
 DOCKER_RUN_OTHER_ENV=-e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER=$(RPC_USER) -e RPC_PASSWORD=$(RPC_PASSWORD) -e RPC_HOST=localhost -e DAPP_HOST=your-domain-name-or-ip -e DAPP_SMTP_HOST=localhost -e DAPP_SMTP_USER=doichain -e DAPP_SMTP_PASS='doichain-mail-pw!' -e DAPP_SMTP_PORT=25 -e CONFIRM_ADDRESS=xxx -e DEFAULT_FROM='reply@your-domain.com'
 DOCKER_MAINNET=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) $(DOCKER_RUN_OTHER_ENV) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_$@:/home/doichain/data --name=doichain_$@ --hostname=doichain_$@
@@ -48,9 +48,9 @@ help:
 	$(info 		  name_doi - test name_doi)
 
 setports:
-	HTTPPORT_EXISTS=$(shell sudo lsof -i TCP:$(HTTP_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
-	RPCPORT_EXISTS=$(shell sudo lsof -i TCP:$(RPC_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
-	P2PPORT_EXISTS=$(shell sudo lsof -i TCP:$(PORT) | grep LISTEN) #cannot recognise my webserver for some reason
+	HTTPPORT_EXISTS=$(shell lsof -i TCP:$(HTTP_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
+	RPCPORT_EXISTS=$(shell lsof -i TCP:$(RPC_PORT) | grep LISTEN) #cannot recognise my webserver for some reason
+	P2PPORT_EXISTS=$(shell lsof -i TCP:$(PORT) | grep LISTEN) #cannot recognise my webserver for some reason
 
 
 http_port: setports
@@ -83,7 +83,7 @@ endif
 all: build test
 
 build:
-	sudo docker build --no-cache -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
+	docker build --no-cache -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
 	
 mainnet%: http_port rpc_port p2pport
 	$(info Checking if HTTP_PORT, RPC_PORT and PORT is set)
@@ -119,7 +119,7 @@ new_mainnet:
 	
 	#now connect bob to alice!
 	sleep 3
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' doichain_mainnet-alice))
+	$(eval ALICE_DOCKER_IP=$(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' doichain_mainnet-alice))
 	@echo doichain_mainnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
@@ -168,14 +168,14 @@ new_regtest:
 connect-testnet:
 	#get internal docker ipaddress of alice and let bob connect to alice
 	sleep 3
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
+	$(eval ALICE_DOCKER_IP=$(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet-alice))
 	@echo testnet-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user $(RPC_USER):$(RPC_PASSWORD) --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl --user $(RPC_USER):$(RPC_PASSWORD) --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq 
 
 connect-regtest:
 	#get internal docker ipaddress of alice and let bob connect to alice
-	$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
+	$(eval ALICE_DOCKER_IP=$(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
 	@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
 	curl -s --user $(RPC_USER):$(RPC_PASSWORD) --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 	curl --user $(RPC_USER):$(RPC_PASSWORD) --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getpeerinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_ALICE)/ | jq 
@@ -237,7 +237,7 @@ temp:
 
 
 	#get internal docker ipaddress of alice and let bob connect to alice
-	#$(eval ALICE_DOCKER_IP=$(shell sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
+	#$(eval ALICE_DOCKER_IP=$(shell docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' regtest-alice))
 	#@echo regtest-alice has internal IP:$(ALICE_DOCKER_IP)
 	#curl -s --user admin:generated-password --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "addnode", "params": ["$(ALICE_DOCKER_IP)", "onetry"] }' -H 'content-type: text/plain;' http://127.0.0.1:$(RPC_PORT_BOB)/
 
