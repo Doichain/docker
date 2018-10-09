@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y \
 	bsdmainutils \
 	build-essential \
 	curl \
-	jq \
 	vim \
 	jq \
 	bc \
@@ -64,7 +63,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 	CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure --prefix=/ && \
 	#CONFIG_SITE=$PWD/depends/i686-w64-mingw32/share/config.site ./configure --prefix=/ && \
 	make  && \
-	find . -name *.exe
-
+	find . -name *.exe && \
+    sleep infinity
 
 
