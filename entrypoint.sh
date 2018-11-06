@@ -41,6 +41,7 @@ if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
 	rpcallowip=${RPC_ALLOW_IP}
 	rpcport=${_RPC_PORT}
 	txindex=1
+	rpcworkqueue=2048
 	walletnotify=curl -X GET ${_DAPP_URL}/api/v1/walletnotify?tx=%s
 	port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
