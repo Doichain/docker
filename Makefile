@@ -1,6 +1,6 @@
 IMG=doichain/dapp:0.0.7
-DOICHAIN_VER=dc0.16.3
-DOICHAIN_DAPP_VER=0.0.7
+DOICHAIN_VER=master
+DOICHAIN_DAPP_VER=master
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
@@ -29,7 +29,7 @@ private RUNNING_TARGET:=$(shell docker ps -aq -f name=$@)
 
 RUN_SHELL=bash
 
-default: check help
+default: help
 
 check:
 	which jq; which bc
@@ -37,6 +37,7 @@ check:
 help:
 	$(info Usage: make <mainnet|testnet|regtest-alice|regtest-bob|regtest-*> HTTP_PORT=<http-port>)
 	$(info 		  make clean - removes $(IMG) image and containers)
+	$(info 		  make builds the images according to the given doichain core and dapp versions)
 	$(info 		  make mainnet-<your-name-or-id> creates a doichain mainet node and dapp with docker name <your-name-or-id>)
 	$(info 		  make testnet-<your-name-or-id> creates a doichain mainet node and dapp with docker name <your-name-or-id>)
 	$(info        make test_regtest - creates a regtest network, connects alice and bob, generates 110 blocks, sends 10 to bob)
