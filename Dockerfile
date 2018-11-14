@@ -76,7 +76,8 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install doichain-core
 WORKDIR /home/doichain
 RUN mkdir .doichain && \
-	sudo git clone --branch ${DOICHAIN_VER} --depth 1 https://github.com/Doichain/core.git doichain-core && \
+	#sudo git clone --branch ${DOICHAIN_VER} --depth 1 https://github.com/Doichain/core.git doichain-core && \
+	sudo git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
 	cd doichain-core && \
 	sudo ./autogen.sh && \
 	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" && \

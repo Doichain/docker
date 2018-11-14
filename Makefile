@@ -1,4 +1,5 @@
 IMG=doichain/node-only
+#IMG=doichain/core:0.16.3.1
 DOICHAIN_VER=0.16.3.1
 
 default: build
