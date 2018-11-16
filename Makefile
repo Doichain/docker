@@ -1,5 +1,5 @@
 IMG=doichain/dapp:0.0.7
-DOICHAIN_VER=dc0.16.3.1
+DOICHAIN_VER=0.16.3.2
 DOICHAIN_DAPP_VER=0.0.7.1
 
 #in case you want to play with alice and bob - change those parameters!
