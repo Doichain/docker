@@ -67,8 +67,7 @@ ENV LANGUAGE en_US:en
 WORKDIR /
 RUN adduser --disabled-password --gecos '' doichain && \
 	adduser doichain sudo && \
-	echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-	service mongodb start
+	echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER doichain
 
 #Install berkeley-db
