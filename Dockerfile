@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	jq \
 	vim \
-	jq \
+	mongodb \
 	bc \
 	bsdtar \
 	dos2unix \
@@ -69,7 +69,8 @@ ENV LANGUAGE en_US:en
 WORKDIR /
 RUN adduser --disabled-password --gecos '' doichain && \
 	adduser doichain sudo && \
-	echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+	echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+	service mongodb start
 USER doichain
 
 #Install berkeley-db
@@ -88,11 +89,11 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 #Install doichain-core
 WORKDIR /home/doichain
 RUN mkdir .doichain && \
-	sudo git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
+	git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
 	cd doichain-core && \
-	sudo ./autogen.sh && \
-	sudo ./configure --without-gui  --disable-tests  --disable-gui-tests CXXFLAGS="--param ggc-min-expand=1 --param ggc-min-heapsize=32768" && \
-	sudo make && \
+	./autogen.sh && \
+	./configure --without-gui  --disable-tests  --disable-gui-tests && \
+	make && \
 	sudo make install
 
 RUN sudo curl https://install.meteor.com/ | sh && \
@@ -100,8 +101,8 @@ RUN sudo curl https://install.meteor.com/ | sh && \
 	sudo chown -R doichain:doichain /home/doichain/dapp
 WORKDIR /home/doichain/dapp/
 RUN meteor npm install && \
-	sudo git submodule init && sudo git submodule update && \
-	sudo meteor npm install --save bcrypt
+	git submodule init && git submodule update && \
+	meteor npm install --save bcrypt
 
 #Copy start scripts
 WORKDIR /home/doichain/scripts/
