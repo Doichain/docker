@@ -1,6 +1,6 @@
 IMG=doichain/dapp
 DOICHAIN_VER=0.16.3.2
-DOICHAIN_DAPP_VER=0.0.7.1
+DOICHAIN_DAPP_VER=0.0.7.2
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84

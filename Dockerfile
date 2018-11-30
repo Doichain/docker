@@ -56,7 +56,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN export tar='bsdtar'
 
-
 #Install locales
 RUN locale-gen ${OS_LOCALE}
 
