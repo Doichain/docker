@@ -119,4 +119,4 @@ ENTRYPOINT ["scripts/entrypoint.sh"]
 CMD ["scripts/start.sh"]
 
 #Expose ports
-EXPOSE $NODE_PORT $RPC_PORT_REGTEST
+EXPOSE $NODE_PORT $RPC_PORT $RPC_PORT_REGTEST
