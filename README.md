@@ -1,6 +1,6 @@
 # doichain/docker
 ## a docker image for the Doichain environment http://www.doichain.org
-
+***This document needs to be rewritten, but may still contain important information/practices***
 ### Who needs this docker container?
 1. Web Project owners 
   - I want run a node and a dApp in order to request "Double-Opt-In" email permissions
