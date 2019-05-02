@@ -91,7 +91,7 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 	  fi
 	fi
 	if [ $DAPP_CONFIRM = true ]; then
-		if [ -z "$DAPP_SMTP_USER" ] || [ -z "$DAPP_SMTP_PASS" ] || [ -z "$DAPP_SMTP_HOST" ] || [ -z "$DAPP_SMTP_PORT" ]; then
+		if [ -z "$DAPP_SMTP_USER" ] || [ -z "$DAPP_SMTP_HOST" ] || [ -z "$DAPP_SMTP_PORT" ]; then
 			echo "Confirmation dApp active but smtp settings not found! (ENV DAPP_SMTP_USER, DAPP_SMTP_PASS, DAPP_SMTP_HOST, DAPP_SMTP_PORT)"
 			exit 1
 		fi

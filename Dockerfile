@@ -1,4 +1,5 @@
-FROM ubuntu
+#FROM ubuntu
+FROM node:8
 
 ARG DOICHAIN_VER=master
 ARG DOICHAIN_DAPP_VER=master
@@ -14,8 +15,8 @@ ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
 ENV DAPP_PORT 3000
 ENV DAPP_HOST "localhost"
 ENV DAPP_SEND true
-ENV DAPP_SMTP_USER ""
-ENV DAPP_SMTP_HOST ""
+ENV DAPP_SMTP_USER "doichain"
+ENV DAPP_SMTP_HOST "localhost"
 ENV DAPP_SMTP_PASS ""
 ENV DAPP_SMTP_PORT 587
 ENV DAPP_VERIFY true
@@ -52,6 +53,7 @@ RUN apt-get update && apt-get install -y \
 	locales \
 	pkg-config \
 	sudo \
+  	&& (curl https://install.meteor.com/ | sh) \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN export tar='bsdtar'
@@ -76,11 +78,12 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 	sudo tar xzvf db-4.8.30.NC.tar.gz && \
 	cd db-4.8.30.NC/build_unix/ && \
 	sudo ../dist/configure --enable-cxx && \
+	sudo rm /usr/include/db.h && \
 	sudo make && \
 	sudo make install && \
-	sudo ln -s /usr/local/BerkeleyDB.4.8 /usr/include/db4.8 &&\
-	sudo ln -s /usr/include/db4.8/include/* /usr/include &&\
-	sudo ln -s /usr/include/db4.8/lib/* /usr/lib
+	sudo ln -s /usr/local/BerkeleyDB.4.8 /usr/include/db4.8 && \
+	sudo ln -s /usr/include/db4.8/lib/* /usr/lib && \
+    sudo ln -s /usr/include/db4.8/include/* /usr/include
 
 #Install doichain-core
 WORKDIR /home/doichain
@@ -90,14 +93,8 @@ RUN mkdir .doichain && \
 	./autogen.sh && \
 	./configure --without-gui  --disable-tests  --disable-gui-tests && \
 	make && \
-	sudo make install
-
-RUN sudo curl https://install.meteor.com/ | sh && \
-	sudo git clone --branch ${DOICHAIN_DAPP_VER} https://github.com/Doichain/dApp.git /home/doichain/dapp && \
-	sudo chown -R doichain:doichain /home/doichain/dapp
-WORKDIR /home/doichain/dapp/
-RUN meteor npm install && \
-	git submodule init && git submodule update && \
+	sudo make install && cd .. && \
+	git clone --branch ${DOICHAIN_DAPP_VER} https://github.com/Doichain/dApp.git dapp && cd dapp && \
 	meteor npm install --save bcrypt
 
 #Copy start scripts
@@ -125,17 +122,15 @@ RUN sudo dos2unix \
 WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
-	mkdir doichain &&\
-	mkdir -p \
-	dapp/local && \
-	sudo rm -rf \
-	/home/doichain/.doichain \
+	mkdir doichain && \
+	sudo rm -rf /home/doichain/.doichain \
 	/home/doichain/dapp/.meteor/local && \
-	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain && \
-	sudo ln -s /home/doichain/data/dapp/local /home/doichain/dapp/.meteor
+	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain
 
-#Run entrypoint
-WORKDIR /home/doichain
+WORKDIR /home/doichain/dapp
+RUN pwd && meteor build build/ --architecture os.linux.x86_64 --directory --server ${DAPP_HOST}:${DAPP_PORT}
+RUN echo 'finished creating bundle' && cd build/bundle/programs/server && npm install && cd -  	
+
 ENTRYPOINT ["scripts/entrypoint.sh"]
 
 #Start doichain and meteor
