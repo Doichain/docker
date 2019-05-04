@@ -1,6 +1,6 @@
 IMG=doichain/dapp
 DOICHAIN_VER=0.16.3.2
-DOICHAIN_DAPP_VER=v0.0.8.6
+DOICHAIN_DAPP_VER=v0.0.8.8
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
@@ -18,7 +18,7 @@ RPC_PASSWORD=
 
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
-DOCKER_RUN=docker run -td --restart always
+DOCKER_RUN=docker run -td --restart always --link mongo
 DOCKER_RUN_DEFAULT_ENV=-e DAPP_DEBUG=true 
 DOCKER_RUN_OTHER_ENV=-e DAPP_CONFIRM='true' -e DAPP_VERIFY='true' -e DAPP_SEND='true' -e RPC_USER=$(RPC_USER) -e RPC_PASSWORD=$(RPC_PASSWORD) -e RPC_HOST=localhost -e DAPP_HOST=your-domain-name-or-ip -e DAPP_SMTP_HOST=localhost -e DAPP_SMTP_USER=doichain -e DAPP_SMTP_PASS='doichain-mail-pw!' -e DAPP_SMTP_PORT=25 -e CONFIRM_ADDRESS=xxx -e DEFAULT_FROM='reply@your-domain.com'
 DOCKER_MAINNET=$(DOCKER_RUN) $(DOCKER_RUN_DEFAULT_ENV) $(DOCKER_RUN_OTHER_ENV) -p $(HTTP_PORT):3000 -p $(PORT):8338 -p $(RPC_PORT):8339 -v doichain_$@:/home/doichain/data --name=doichain_$@ --hostname=doichain_$@
@@ -83,6 +83,7 @@ endif
 
 all: build test
 
+#--no-cache 
 build:
 	docker build -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) --build-arg DOICHAIN_DAPP_VER=$(DOICHAIN_DAPP_VER) .
 	

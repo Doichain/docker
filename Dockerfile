@@ -1,4 +1,3 @@
-#FROM ubuntu
 FROM node:8
 
 ARG DOICHAIN_VER=master
@@ -87,7 +86,7 @@ RUN echo '12edc0df75bf9abd7f82f821795bcee50f42cb2e5f76a6a281b85732798364ef  db-4
 
 #Install doichain-core
 WORKDIR /home/doichain
-RUN mkdir .doichain && \
+RUN mkdir .doichain scripts && \
 	git clone --branch ${DOICHAIN_VER} https://github.com/Doichain/core.git doichain-core && \
 	cd doichain-core && \
 	./autogen.sh && \
@@ -112,8 +111,8 @@ RUN sudo dos2unix \
 	sudo chmod +x \
 	entrypoint.sh \
 	start.sh \
-	doichain-start.sh \
 	getblocktimes.sh \
+	doichain-start.sh \
 	dapp-start.sh && \
 	sudo apt-get --purge remove -y dos2unix && \
 	sudo rm -rf /var/lib/apt/lists/*
@@ -123,18 +122,20 @@ WORKDIR /home/doichain
 RUN mkdir data && \
 	cd data && \
 	mkdir doichain && \
+	mkdir -p \
+	dapp/local && \
 	sudo rm -rf /home/doichain/.doichain \
 	/home/doichain/dapp/.meteor/local && \
-	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain
+	sudo ln -s /home/doichain/data/doichain /home/doichain/.doichain && \
+	sudo ln -s /home/doichain/data/dapp/local /home/doichain/dapp/.meteor
 
 WORKDIR /home/doichain/dapp
-RUN pwd && meteor build build/ --architecture os.linux.x86_64 --directory --server ${DAPP_HOST}:${DAPP_PORT}
-RUN echo 'finished creating bundle' && cd build/bundle/programs/server && npm install && cd -  	
-
+RUN meteor npm install && meteor build build/ --architecture os.linux.x86_64 --directory --server ${DAPP_HOST}:${DAPP_PORT}
+WORKDIR /home/doichain
 ENTRYPOINT ["scripts/entrypoint.sh"]
 
 #Start doichain and meteor
-CMD ["scripts/start.sh"]
+CMD ["/home/doichain/scripts/start.sh"]
 
 #Expose ports
 EXPOSE $DAPP_PORT $NODE_PORT $RPC_PORT

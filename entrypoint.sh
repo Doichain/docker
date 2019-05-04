@@ -39,6 +39,8 @@ if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
 	port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 
+cd /home/doichain/data/
+cd dapp
 
 DAPP_SETTINGS_FILE=/home/doichain/data/dapp/settings.json
 if [ ! -f "$DAPP_SETTINGS_FILE" ]; then

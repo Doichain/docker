@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-scripts/dapp-start.sh &
-scripts/doichain-start.sh &
+/home/doichain/scripts/dapp-start.sh &
+/home/doichain/scripts/doichain-start.sh &
 
 exec /bin/bash
