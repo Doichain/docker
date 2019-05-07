@@ -6,19 +6,20 @@ ENV DOICHAIN_VER $DOICHAIN_VER
 ENV DOICHAIN_DAPP_VER $DOICHAIN_DAPP_VER
 
 #Setup run vars
-ENV CONFIRM_ADDRESS ""
-ENV CONNECTION_NODE 5.9.154.226
-ENV DAPP_CONFIRM true
-ENV DAPP_DEBUG true
-ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
-ENV DAPP_PORT 3000
-ENV DAPP_HOST "localhost"
 ENV DAPP_SEND true
+ENV DAPP_CONFIRM true
+ENV DAPP_VERIFY true
+ENV DAPP_DEBUG true
+ENV DAPP_HOST "localhost"
+ENV DAPP_PORT 3000
+ENV CONFIRM_ADDRESS ""
+ENV MONGO_URL false
+ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
 ENV DAPP_SMTP_USER "doichain"
 ENV DAPP_SMTP_HOST "localhost"
 ENV DAPP_SMTP_PASS ""
 ENV DAPP_SMTP_PORT 587
-ENV DAPP_VERIFY true
+ENV CONNECTION_NODE 5.9.154.226
 ENV NODE_PORT 8338
 ENV NODE_PORT_TESTNET 18338
 ENV NODE_PORT_REGTEST 18445
@@ -40,7 +41,7 @@ RUN apt-get update && apt-get install -y \
 	curl \
 	jq \
 	vim \
-	mongodb \
+#	mongodb \
 	bc \
 	bsdtar \
 	dos2unix \
@@ -114,7 +115,7 @@ RUN sudo dos2unix \
 	getblocktimes.sh \
 	doichain-start.sh \
 	dapp-start.sh && \
-	sudo apt-get --purge remove -y dos2unix && \
+	sudo apt-get --purge remove -y dos2unix build-essential autoconf && \
 	sudo rm -rf /var/lib/apt/lists/*
 
 #Create data dir
