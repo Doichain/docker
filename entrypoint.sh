@@ -58,6 +58,7 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 			"debug": "'$DAPP_DEBUG'",
 			"host": "'$DAPP_HOST'",
 			"port": "'$DAPP_PORT'",
+			"ssl": "'$DAPP_SSL'",
 	    "types": ['
 	if [ $DAPP_SEND = true ]; then
 	  DAPP_SETTINGS=$DAPP_SETTINGS'"send"'
