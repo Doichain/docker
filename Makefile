@@ -7,7 +7,8 @@ DNS2=172.104.136.243
 #DAPP_HOST is used for settings.json to tell confirm dapp under which url to request the DOI template
 #DAPP_HOST is also used
 DAPP_HOST=5.9.154.226
-DAPP_PORT=4000
+HTTP_PORT=3010
+DAPP_PORT=3010
 DAPP_SSL=false
 MONGO_URL=mongodb://doichain:secret@mongo:27017/admin
 
