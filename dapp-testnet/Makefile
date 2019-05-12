@@ -1,4 +1,4 @@
-IMG=doichain/dapp
+IMG=doichain/dapp-testnet
 #you might have to change some of those values
 DOICHAIN_VER=0.16.3.2
 DOICHAIN_DAPP_VER=0.0.9
