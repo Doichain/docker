@@ -83,7 +83,7 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 	  DAPP_SETTINGS=$DAPP_SETTINGS'"send": {
 			"doiMailFetchUrl": "'$DAPP_DOI_URL'",
 			"doichain": {
-		    "host": "localhost",
+		    "host":"'$RPC_HOST'",
 		    "port": "'$_RPC_PORT'",
 		    "username": "'$RPC_USER'",
 		    "password": "'$RPC_PASSWORD'"
@@ -100,16 +100,17 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 		fi
 	  DAPP_SETTINGS=$DAPP_SETTINGS'"confirm": {
 			"doichain": {
-			  "host": "localhost",
+		      "host":"'$RPC_HOST'",
 			  "port": "'$_RPC_PORT'",
 			  "username": "'$RPC_USER'",
 			  "password": "'$RPC_PASSWORD'",
-				"address": "'$CONFIRM_ADDRESS'"
+			  "address": "'$CONFIRM_ADDRESS'"
 			},
 			"smtp": {
 		      "username": "'$DAPP_SMTP_USER'",
 		      "password": "'$DAPP_SMTP_PASS'",
 		      "server":   "'$DAPP_SMTP_HOST'",
+		      "smtps":false,
 		      "port": "'$DAPP_SMTP_PORT'",
 		      "NODE_TLS_REJECT_UNAUTHORIZED":"0",
 		      "defaultFrom": "doichain@example-domain.org"
@@ -122,7 +123,7 @@ if [ ! -f "$DAPP_SETTINGS_FILE" ]; then
 	if [ $DAPP_VERIFY = true ]; then
 	  DAPP_SETTINGS=$DAPP_SETTINGS'"verify": {
 			"doichain": {
-		    "host": "localhost",
+		    "host":"'$RPC_HOST'",
 		    "port": "'$_RPC_PORT'",
 		    "username": "'$RPC_USER'",
 		    "password": "'$RPC_PASSWORD'"

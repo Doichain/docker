@@ -11,10 +11,10 @@ ENV DAPP_CONFIRM true
 ENV DAPP_VERIFY true
 ENV DAPP_DEBUG true
 ENV DAPP_HOST "localhost"
-ENV DAPP_PORT 3000
+ENV DAPP_PORT 3010
 ENV CONFIRM_ADDRESS ""
 ENV MONGO_URL false
-ENV DAPP_DOI_URL http://localhost:3000/api/v1/debug/mail
+ENV DAPP_DOI_URL http://localhost:$DAPP_PORT/api/v1/debug/mail
 ENV DAPP_SMTP_USER "doichain"
 ENV DAPP_SMTP_HOST "localhost"
 ENV DAPP_SMTP_PASS ""
