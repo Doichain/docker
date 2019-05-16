@@ -6,10 +6,10 @@
 #echo 'finished creating bundle' && cd build/bundle/programs/server && npm install && cd -
 #echo 'starting doichain dapp via node' && 
 export METEOR_SETTINGS=$(cat /home/doichain/data/dapp/settings.json)
-export PORT=$DAPP_PORT
+export PORT=$HTTP_PORT
 export ROOT_URL=http://$DAPP_HOST:$DAPP_PORT
 
-echo "starting dapp via node"
+echo "starting dapp via node bundle"
 cd /home/doichain/dapp/build/bundle/programs/server
 npm install
 (cd /home/doichain/dapp; nohup node build/bundle/main.js &)
