@@ -10,7 +10,7 @@ DAPP_HOST=5.9.154.226
 HTTP_PORT=3000
 DAPP_PORT=3000
 DAPP_SSL=false
-MONGO_URL=mongodb://doichain:secret@mongo:27017/admin
+MONGO_URL=mongodb://doichain:secret@mongo:27017/doichain
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84

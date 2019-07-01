@@ -11,7 +11,7 @@ DAPP_PORT=4010
 #internal http-port inside docker
 HTTP_PORT=3010
 DAPP_SSL=false
-MONGO_URL=mongodb://doichain:secret@mongo:27017/admin
+MONGO_URL=mongodb://doichain:secret@mongo:27017/doichain-testnet
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84
