@@ -11,9 +11,9 @@
 3. Developers
   - ``git clone https://github.com/Doichain/docker.git doichain-docker; cd doichain-docker``
   - run a testnet node ``make testnet-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339`` 
-  - run a testnet network with alice and bob ``make test_testnet``
+  - run a testnet network ``make test_testnet``
   - run a regtest node run ``make regtest-[my-doichain] HTTP_PORT=81 PORT=18338 RPC_PORT=18339``
-  - run a regtest network wiht aliceand bob ```maek test_regtest``
+  - run a regtest network wiht alice and bob ```make test_regtest``
   - run ``docker attach testnet-[my-doichain]`` in order to connect to your docker container
   - run inside the docker container: ``tail -f /home/doichain/.doichain/testnet/debug.log`` in order to watch blockchain download
   - run ``doichain-cli getnewaddress`` and send your testnet address to testnet@doichain.org with subject "send me money"
@@ -90,3 +90,15 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 4. DOI-Request Email doesn't loook beatiful or should look differently. Please change template and data in server/api/rest/imports/debug.js
 5. DOI-Request Email has wrong sender email address. Please change template and data in server/api/rest/imports/debug.js
 6. Confirmation email is not send out. Enable type 'confirm' (and maybe 'verify') in /home/doichain/data/dapp/settings.json
+
+
+### Upgrade from 0.0.8 to 0.0.9
+1. make a backup of your meteor mongo db. (```docker exec -it <your-docker-node>  mongodump -h 127.0.0.1 --port 3001 -d meteor````
+2. shutdown your old docker container (docker stop  <your-doichain-node-name>)
+3. create doinet on docker ``docker network create doinet```
+4. start mongo (see: https://hub.docker.com/_/mongo)  (change the password!)
+docker run -d --network doinet --name mongo \
+            -e MONGO_INITDB_ROOT_USERNAME=doichain \
+    -e MONGO_INITDB_ROOT_PASSWORD=secret \
+    mongo
+3. start a new docker container based on version 0.0.9 (e.g. use makefile provided ```make mainnet_<your-new-doichain-node-name>```
