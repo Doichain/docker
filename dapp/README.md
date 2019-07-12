@@ -93,6 +93,9 @@ curl -X POST -H 'X-User-Id: a7Rzs7KdNmGwj64Eq' -H 'X-Auth-Token: Y1z8vzJMo1qqLjr
 
 
 ### Upgrade from 0.0.8 to 0.0.9
+
+0. create backup and restore in one go ```mongodump --host localhost:3001 --db meteor --gzip --forceTableScan --archive | mongorestore --drop -vvvvvv -h le-space.de:27017 --db doichain --gzip --archive```
+
 1. make a backup of your meteor mongo db. (```docker exec -it <your-docker-node>  mongodump -h 127.0.0.1 --port 3001 -d meteor````
 2. shutdown your old docker container (docker stop  <your-doichain-node-name>)
 3. create doinet on docker ``docker network create doinet```
@@ -101,4 +104,5 @@ docker run -d --network doinet --name mongo \
             -e MONGO_INITDB_ROOT_USERNAME=doichain \
     -e MONGO_INITDB_ROOT_PASSWORD=secret \
     mongo
+
 3. start a new docker container based on version 0.0.9 (e.g. use makefile provided ```make mainnet_<your-new-doichain-node-name>```
