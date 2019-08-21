@@ -1,4 +1,4 @@
-IMG=doichain/dapp-testnet
+IMG=doichain/dapp-testnet:0.0.9.30
 #you might have to change some of those values
 DOICHAIN_VER=0.16.3.2
 DOICHAIN_DAPP_VER=0.0.9
@@ -11,7 +11,7 @@ DAPP_PORT=4010
 #internal http-port inside docker
 HTTP_PORT=3010
 DAPP_SSL=false
-MONGO_URL=mongodb://doichain:secret@mongo:27017/doichain-testnet
+MONGO_URL=mongodb://doichain-testnet:doichain-testnet@mongo:27017/doichain-testnet
 
 #in case you want to play with alice and bob - change those parameters!
 HTTP_PORT_ALICE=84

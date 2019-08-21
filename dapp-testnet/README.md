@@ -4,7 +4,7 @@
 ### Who needs this docker container?
 1. Web Project owners 
   - I want run a node and a dApp in order to request "Double-Opt-In" email permissions from my user
-2. Mail Server provider / Sysadmins
+2. Mail Server provider / sysadmins
   - we want to be part of the project and allow our users to confirm their email permissions directly over our mail host without any third party
 3. Investors
   - run my own node in order to simply send/receive Doi (Doichain coins)
