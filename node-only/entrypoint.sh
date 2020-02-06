@@ -31,6 +31,7 @@ if [ -z ${DAPP_URL} ]; then
 fi
 
 DOICHAIN_CONF_FILE=/home/doichain/data/doichain/doichain.conf
+if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
 echo "DOICHAIN_CONF_FILE not found - generating new!"
 echo "
 daemon=1
@@ -41,8 +42,8 @@ rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
 txindex=1
 namehistory=1
-blocknotify=curl -X GET http://localhost:${DAPP_PORT}/api/v1/blocknotify?block=%s
-walletnotify=curl -X GET http://localhost:${DAPP_PORT}/api/v1/walletnotify?tx=%s
+blocknotify=curl -X GET ${DAPP_URL}/api/v1/blocknotify?block=%s
+walletnotify=curl -X GET ${DAPP_URL}/api/v1/walletnotify?tx=%s
 port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 
