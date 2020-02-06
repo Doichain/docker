@@ -1,7 +1,8 @@
-IMG=doichain/dapp-testnet:0.0.9.38
-#you might have to change some of those values
+IMG=doichain/dapp-testnet:v0.0.9.54
 DOICHAIN_VER=0.16.3.2
-DOICHAIN_DAPP_VER=0.0.9
+DOICHAIN_DAPP_VER=v0.0.9.54
+
+
 DNS1=91.217.137.37
 DNS2=172.104.136.243
 #DAPP_HOST is used for settings.json to tell confirm dapp under which url to request the DOI template

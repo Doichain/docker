@@ -1,4 +1,4 @@
-IMG=doichain/node-only
+IMG=doichain/node-only:v0.0.9.53
 DOICHAIN_VER=dc0.16.3.1
 
 default: build
