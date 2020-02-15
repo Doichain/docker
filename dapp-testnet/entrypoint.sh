@@ -36,8 +36,8 @@ rpcallowip=${RPC_ALLOW_IP}
 rpcport=${_RPC_PORT}
 txindex=1
 namehistory=1
-blocknotify=curl -X GET http://localhost:${DAPP_PORT}/api/v1/blocknotify?block=%s
-walletnotify=curl -X GET http://localhost:${DAPP_PORT}/api/v1/walletnotify?tx=%s
+blocknotify=curl -X GET http://localhost:${HTTP_PORT}/api/v1/blocknotify?block=%s
+walletnotify=curl -X GET http://localhost:${HTTP_PORT}/api/v1/walletnotify?tx=%s
 port=${_NODE_PORT}" > $DOICHAIN_CONF_FILE
 fi
 

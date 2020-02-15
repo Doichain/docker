@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:12
 
 ARG DOICHAIN_VER=master
 ARG DOICHAIN_DAPP_VER=master
