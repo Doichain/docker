@@ -1,5 +1,6 @@
 IMG=doichain/node-only
-DOICHAIN_VER=dc0.16.3.1
+# DOICHAIN_VER=dc0.16.3.1
+DOICHAIN_VER=dc0.20.1.9
 
 default: build
 
@@ -8,5 +9,6 @@ build:
 
 build-no-clean:
 	docker build -t $(IMG) --build-arg DOICHAIN_VER=$(DOICHAIN_VER) .
+
 
 

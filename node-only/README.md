@@ -6,7 +6,7 @@
 2. build docker image 
 ```shell
 cd doichain-docker/node-only
-docker build --no-cache -t dc0.16.3.1 --build-arg DOICHAIN_VER=doichain/node-only .
+docker build --no-cache -t doichain/node-only --build-arg DOICHAIN_VER=dc0.20.1.9 .
 ```
 3. Run docker image 
    
