@@ -35,6 +35,8 @@ docker exec -it doichain doichain-cli dumpprivkey <address>
 6. Common wallet commands
 ```shell
 docker exec -it doichain doichain-cli help #show all commands
+docker exec -it doichain doichain-cli getblockchaininfo #shows blockchain status sync header, blocks etc.
+docker exec -it doichain doichain-cli getpeerinfo #shows all connected peers
 docker exec -it doichain doichain-cli listtransactions #list wallet transactions
 docker exec -it doichain doichain-cli sendtoaddresss #sends DOI amount to address
 
