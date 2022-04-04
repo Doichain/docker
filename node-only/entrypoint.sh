@@ -41,6 +41,7 @@ if [ ! -f "$DOICHAIN_CONF_FILE" ]; then
 	rpcallowip=${RPC_ALLOW_IP}
 	rpcport=${_RPC_PORT}
 	txindex=1
+	fallbackfee=0.0002
 	rpcworkqueue=2048
     blocknotify=curl -X GET ${_DAPP_URL}/api/v1/blocknotify?tx=%s
 	walletnotify=curl -X GET ${_DAPP_URL}/api/v1/walletnotify?tx=%s
